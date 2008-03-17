@@ -16,6 +16,10 @@
         {
             "name": "Laurent Jouanneau",
             "email": "laurent@jelix.org"
+        },
+        {
+            "name": "Sylvain de Vathaire",
+            "email": "s.de.vathaire@neov.net"
         }
     ],
     "require": {

@@ -67,7 +67,7 @@ class IPXMLSchema {
 				}
 				$v = new IPReflectionClass($name);
 				//TODO: check if the class extends another class?
-				$properties = $v->getProperties(false, false);//not protected and private properties
+				$properties = $v->getProperties(false, false, false);//not protected and private properties
 
 				foreach((array) $properties as $property){
 					if(!$property->isPrivate){

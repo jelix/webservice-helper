@@ -9,6 +9,7 @@
  *
  * @version 0.1
  * @author David Kingma
+ * @contributor Sylvain de Vathaire
  * @extends reflectionClass
  */
 class IPReflectionClass extends reflectionClass {
@@ -56,11 +57,11 @@ class IPReflectionClass extends reflectionClass {
 	 * @param boolean If the method should also return private functions
 	 * @return IPReflectionMethod[]
 	 */
-	public function getMethods($alsoProtected = true, $alsoPrivate = true){
+	public function getMethods($alsoProtected = true, $alsoPrivate = true, $alsoHerited = false){
 		$ar = parent::getMethods();
 		foreach($ar as $method){
 			$m = new IPReflectionMethod($this->classname, $method->name);
-			if((!$m->isPrivate() || $alsoPrivate) && (!$m->isProtected() || $alsoProtected) && ($m->getDeclaringClass()->name == $this->classname))
+			if((!$m->isPrivate() || $alsoPrivate) && (!$m->isProtected() || $alsoProtected) && (($m->getDeclaringClass()->name == $this->classname) || $alsoHerited))
 				$this->methods[$method->name] = $m;
 		}
 		ksort($this->methods);
@@ -74,11 +75,11 @@ class IPReflectionClass extends reflectionClass {
 	 * @param boolean If the method should also return private properties
 	 * @return IPReflectionProperty[]
 	 */
-	public function getProperties($alsoProtected=true,$alsoPrivate=true) {
+	public function getProperties($alsoProtected=true,$alsoPrivate=true, $alsoHerited = false) {
 		$ar = parent::getProperties();
 		$this->properties = Array();
 		foreach($ar as $property){
-			if((!$property->isPrivate() || $alsoPrivate) && (!$property->isProtected() || $alsoProtected)){
+			if((!$property->isPrivate() || $alsoPrivate) && (!$property->isProtected() || $alsoProtected) && (($property->getDeclaringClass()->name == $this->classname) || $alsoHerited)){
 				try{
 					$p = new IPReflectionProperty($this->classname, $property->getName());
 					$this->properties[$property->name]=$p;
