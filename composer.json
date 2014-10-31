@@ -1,0 +1,26 @@
+{
+    "name": "jelix/webservice-helper",
+    "type": "library",
+    "description": "To generate a WSDL content from classes",
+    "keywords": ["soap", "wsdl" ,"generator"],
+    "homepage": "http://www.jool.nl/jool-tech-zone/webservice-helper/",
+    "license": "LGPL-2.1",
+    "support": {
+        "source" : "https://github.com/jelix/webservice-helper"
+    },
+    "authors": [
+        {
+            "name": "David Kingma",
+            "email": "david@jool.nl"
+        }
+    ],
+    "require": {
+        "php": ">=5.2",
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "classmap": [ "lib/soap/" ],
+    },
+    "minimum-stability": "stable"
+}
