@@ -51,7 +51,10 @@ class IPPhpDoc{
 	 * @param string Template file (optional)
 	 * @return string
 	 */
-	public function getDocumentation($template="templates/docclass.xsl")	{
+	public function getDocumentation($template=null)	{
+        if ($template === null) {
+            $template = __DIR__."/../../doc/templates/docclass.xsl";
+        }
 		if(!is_file($template))
 			throw new WSException("Could not find the template file: '$template'");
 		$xtpl = new IPXSLTemplate($template);

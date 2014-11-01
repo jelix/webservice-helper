@@ -1,7 +1,7 @@
 <?php
-require_once "common.php";
+require_once __DIR__."/common.php";
 
-if($_GET['class'] && (in_array($_GET['class'], $WSClasses) || in_array($_GET['class'], $WSStructures))) {
+if(isset($_GET['class']) && (in_array($_GET['class'], $WSClasses) || in_array($_GET['class'], $WSStructures))) {
 	$WSHelper = new WSHelper("http://schema.example.com", $_GET['class']);
 	$WSHelper->actor = "http://schema.example.com";
 	$WSHelper->use = SOAP_ENCODED; 

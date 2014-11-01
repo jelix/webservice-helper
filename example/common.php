@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ob_start("ob_gzhandler");
 
-require_once ("config.php");
+require_once (__DIR__."/config.php");
 
 if(!extension_loaded("soap"))
 	die("Soap extension not loaded!");
@@ -11,12 +11,12 @@ session_start();
 
 /** autoload functie voor PHP5 */
 function __autoload($classname) {
-	if(file_exists("lib/data_objects/$classname.class.php"))
-		include("lib/data_objects/$classname.class.php");
-	elseif(file_exists("lib/soap/$classname.class.php"))
-		include("lib/soap/$classname.class.php");
-	elseif(file_exists("lib/$classname.class.php"))
-		include("lib/$classname.class.php");
+	if(file_exists(__DIR__."/data_objects/$classname.class.php"))
+		include(__DIR__."/data_objects/$classname.class.php");
+	elseif(file_exists(__DIR__."/../lib/soap/$classname.class.php"))
+		include(__DIR__."/../lib/soap/$classname.class.php");
+	elseif(file_exists(__DIR__."/../lib/$classname.class.php"))
+		include(__DIR__."/../lib/$classname.class.php");
 }
 
 /** Schrijft de gegeven tekst naar de debug file */
@@ -34,4 +34,3 @@ function debugObject($txt,$obj){
 	ob_end_clean();
 	debug($txt."\n".$data);
 }
-?>
