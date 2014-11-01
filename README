@@ -1,6 +1,8 @@
-Webservice helper 1.5 - Readme
-For more information see www.jool.nl/webservicehelper/
-Author: David Kingma david<AT>jool<DOT>nl
+Webservice helper
+
+This is a fork of Webservice helper from David Kingma.
+Original sources come from www.jool.nl/webservicehelper/.
+Original author : David Kingma david<AT>jool<DOT>nl
 
 1. Changelog
 2. What does the webservice helper?
@@ -9,7 +11,11 @@ Author: David Kingma david<AT>jool<DOT>nl
 6. Example
 7. TODO
 
-Changelog 1.5
+Changelog 1.5.1 (Laurent Jouanneau)
+- Add a Composer.json file
+- Mode example and doc in their new directory
+
+Changelog 1.5 (David Kingma)
 - New Rename and prefix classes, except the WSHelper class
 - Support literal and encoded services
 - Use new native get ReflectionProperty::getDocComment()
