@@ -67,13 +67,14 @@ class IPReflectionMethod extends reflectionMethod{
 	public function getParameters(){
 		$this->parameters = Array();
 		$ar = parent::getParameters();
-		$i = 0;
-
-		foreach((array)$ar as $parameter){
-			$parameter->type = $this->params[$i++]->type;
-			$this->parameters[$parameter->name] = $parameter;
+		foreach((array)$ar as $i => $parameter){
+			if (isset($this->params) && isset($this->params[$i])) {
+				$parameter->type = $this->params[$i++]->type;
+			}
+			else {
+				$parameter->type = 'mixed';
+			}
 		}
-		
 		return $this->parameters;
 	}
 
