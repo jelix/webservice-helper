@@ -1,6 +1,6 @@
 <?
-chdir("..");
-include "common.php";
+
+include "../example/common.php";
 
 class DefaultController {
 	const TYPE_PLAIN = 1;

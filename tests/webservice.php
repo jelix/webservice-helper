@@ -1,5 +1,5 @@
 <?php
-$wsdl = "http://".$_SERVER['HTTP_HOST']."/php_wsdl_generator/service.php?class=contactManager&wsdl";
+$wsdl = "http://".$_SERVER['HTTP_HOST']."/ws/example/service.php?class=contactManager&wsdl";
 echo "<strong>WSDL file:</strong> ".$wsdl."<br>\n";
 
 $options = Array('actor' =>'http://schema.jool.nl',
