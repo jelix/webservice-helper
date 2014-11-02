@@ -12,26 +12,26 @@
  
 class IPReflectionCommentParser{
 	/**
-	 * @var string Contains the full commen text
+	 * @var string Contains the full comment text
 	 */
 	public $comment;
 
 	/**
-	 * @var object refence to the IPReflection(Class|Method|Property)
+	 * @var object reference to the IPReflection(Class|Method|Property)
 	 */
 	public $obj;
 
 	/** @var boolean */
-	public $smallDescriptionDone;
+	public $smallDescriptionDone = false;
 	
 	/** @var boolean */
-	public $fullDescriptionDone;
+	public $fullDescriptionDone = false;
 
 	/**
 	 * Constructor, initiateds the parse function
 	 *
-	 * @param string Commentaar block
-	 * @param string Defines if its the comment for a class, public of function
+	 * @param string Comment block
+	 * @param object Reference to the IPReflection(Class|Method|Property)
 	 */
 	function __construct($comment, $obj) {
 		$this->comment	= $comment;
@@ -43,10 +43,9 @@ class IPReflectionCommentParser{
 	 *
 	 * Will take the type of comment (class, property or function) as an
 	 * argument and split it up in lines.
-	 * @param string Defines if its the comment for a class, public of function
 	 * @return void
 	 */
-	function parse() {
+	protected function parse() {
 		//reset object
 		$descriptionDone = false;
 		$this->fullDescriptionDone = false;
@@ -77,7 +76,7 @@ class IPReflectionCommentParser{
 	 * @return void
 	 */
 
-	function parseDescription($descriptionLine) {
+	protected function parseDescription($descriptionLine) {
 		if(strpos($descriptionLine,"*") <= 2) $descriptionLine = substr($descriptionLine, (strpos($descriptionLine,"*") + 1));
 
 	 	//geen lege comment regel indien al in grote omschrijving
@@ -100,22 +99,20 @@ class IPReflectionCommentParser{
 	 * @param string The tagline
 	 * @return void
 	 */
-	function parseTagLine($tagLine) {
+	protected function parseTagLine($tagLine) {
 		$tagArr = explode(" ", $tagLine);
-		$tag = $tagArr[0];
+		$tag = array_shift($tagArr);
 
 		switch(strtolower($tag)){
 			case 'abstract':
 				$this->obj->abstract = true; break;
 			case 'access':
-				$this->obj->isPrivate = (strtolower(trim($tagArr[1]))=="private")?true:false;
+				$this->obj->isPrivate = (strtolower(trim($tagArr[0]))=="private")?true:false;
 				break;
 			case 'author':
-				unset($tagArr[0]);
 				$this->obj->author = implode(" ",$tagArr);
 				break;
 			case 'copyright':
-				unset($tagArr[0]);
 				$this->obj->copyright = implode(" ",$tagArr);
 				break;
 			case 'deprecated':
@@ -124,41 +121,38 @@ class IPReflectionCommentParser{
 				break;
 			case 'extends': break;
 			case 'global':
-				$this->obj->globals[] = $tagArr[1];
+				$this->obj->globals[] = $tagArr[0];
 				break;
 			case 'param':
 				$o = new stdClass();
-				$o->type = trim($tagArr[1]);
+				$o->type = trim(array_shift($tagArr));
 				$o->comment = implode(" ",$tagArr);
 				$this->obj->params[] = $o;
 				break;
 			case 'return':
-				$this->obj->return = trim($tagArr[1]); break;
+				$this->obj->return = trim($tagArr[0]); break;
 			case 'link':break;
 			case 'see':break;
 			case 'since':
-				$this->obj->since = trim($tagArr[1]); break;
+				$this->obj->since = trim($tagArr[0]); break;
 			case 'static':
 				$this->obj->static = true; break;
 			case 'throws':
-				unset($tagArr[0]);
 				$this->obj->throws = implode(" ",$tagArr);
 				break;
 			case 'todo':
-				unset($tagArr[0]);
 				$this->obj->todo[] = implode(" ",$tagArr);
 				break;
 			case 'var':
-				$this->obj->type = trim($tagArr[1]);
-				unset($tagArr[0],$tagArr[1]);
-				$comment=implode(" ",$tagArr);
+				$this->obj->type = trim(array_shift($tagArr));
+				$comment = implode(" ",$tagArr);
 				//check if its an optional property
 				$this->obj->optional = strpos($comment,"[OPTIONAL]") !== FALSE;
 				$this->obj->autoincrement = strpos($comment,"[AUTOINCREMENT]") !== FALSE;
-				$this->obj->description = str_replace("[OPTIONAL]", "", $comment);
+				$this->obj->description = trim(str_replace(array("[OPTIONAL]","[AUTOINCREMENT]"), "", $comment));
 				break;
 			case 'version':
-				$this->obj->version = $tagArr[1];
+				$this->obj->version = $tagArr[0];
 				break;
 			default:
 			  //echo "\nno valid tag: '".strtolower($tag)."' at tagline: '$tagLine' <br>";

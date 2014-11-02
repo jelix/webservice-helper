@@ -19,7 +19,7 @@ class IPReflectionMethod extends reflectionMethod{
 	/** @var string The return type for this method	 */
 	public $return = "";
 
-	/** @var IPReflectionParameter[] Associative array with reflectionParameter objects */
+	/** @var reflectionParameter[] Associative array with reflectionParameter objects */
 	public $parameters = array();
 
 	/** @var string */
@@ -68,11 +68,28 @@ class IPReflectionMethod extends reflectionMethod{
 		$this->parameters = Array();
 		$ar = parent::getParameters();
 		foreach((array)$ar as $i => $parameter){
-			if (isset($this->params) && isset($this->params[$i])) {
-				$parameter->type = $this->params[$i]->type;
+			$parameter->type = '';
+			try {
+				$ref = $parameter->getClass();
+				if ($ref) {
+					$parameter->type = $ref->getName();
+				}
 			}
-			else {
-				$parameter->type = 'string';
+			catch(Exception $e) {
+			}
+			if ($parameter->type == '') {
+				if ($parameter->isArray()) {
+					$parameter->type = 'array';
+				}
+				else if ($parameter->isCallable()) {
+					$parameter->type = 'function';
+				}
+				else if (isset($this->params) && isset($this->params[$i])) {
+					$parameter->type = $this->params[$i]->type;
+				}
+				else {
+					$parameter->type = 'string';
+				}
 			}
 			$this->parameters[$parameter->name] = $parameter;
 		}

@@ -2,6 +2,10 @@
 <phpunit bootstrap="bootstrap.php">
   <testsuites>
     <testsuite name="WSDL generator">
+      <file>commentParser.php</file>
+      <file>reflectionMethod.php</file>
+    </testsuite>
+    <testsuite name="Extended annotations">
       <file>annotations.php</file>
     </testsuite>
   </testsuites>
