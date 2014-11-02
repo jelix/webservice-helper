@@ -15,12 +15,12 @@
         }
     ],
     "require": {
-        "php": ">=5.2",
+        "php": ">=5.2"
     },
     "require-dev": {
     },
     "autoload": {
-        "classmap": [ "lib/soap/" ],
+        "classmap": [ "lib/soap/" ]
     },
     "minimum-stability": "stable"
 }
