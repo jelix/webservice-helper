@@ -56,17 +56,18 @@ class IPReflectionProperty extends reflectionProperty {
 	}
 
 	/**
-	 * 	
+	 * read an extended annotation
+	 *
 	 * @param $annotationName String the annotation name
 	 * @param $annotationClass String the annotation class
 	 * @return void
+	 * @see IPhpDoc::getAnnotation()
 	 */
 	public function getAnnotation($annotationName, $annotationClass = null){
 		return IPPhpDoc::getAnnotation($this->comment, $annotationName, $annotationClass);
 	}
 	
 	private function parseComment(){
-		// No getDocComment available for properties in php 5.0.3 :(
 		$this->comment = $this->getDocComment();
 		new IPReflectionCommentParser($this->comment, $this);
 	}

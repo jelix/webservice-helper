@@ -80,7 +80,14 @@ class IPPhpDoc{
 
 
 	/**
-	 * 	
+	 * read extended annotation.
+	 *
+	 * An extended annotation is an annotation followed by
+	 * an associative array notation like @something('foo'=>'bar', 'bla'=>'baz')
+	 *
+	 * The value of the annotation is stored as properties of an instance of
+	 * the given $annotationClass.
+	 * 
 	 * @param $comment String The doccomment
 	 * @param $annotationName String the annotation name
 	 * @param $annotationClass String the annotation class

@@ -80,10 +80,12 @@ class IPReflectionMethod extends reflectionMethod{
 	}
 
 	/**
-	 * 	
+	 * read an extended annotation
+	 * 
 	 * @param $annotationName String the annotation name
 	 * @param $annotationClass String the annotation class
 	 * @return void
+	 * @see IPhpDoc::getAnnotation()
 	 */
 	public function getAnnotation($annotationName, $annotationClass = null){
 		return IPPhpDoc::getAnnotation($this->comment, $annotationName, $annotationClass);
