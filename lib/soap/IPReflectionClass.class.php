@@ -60,8 +60,12 @@ class IPReflectionClass extends reflectionClass {
 	public function getMethods($alsoProtected = true, $alsoPrivate = true, $alsoHerited = false){
 		$ar = parent::getMethods();
 		foreach($ar as $method){
-			if($method->name == '__construct')
+			if(substr($method->name, 0, 2) == '__' ||
+				$method->isAbstract() ||
+				$method->isConstructor() ||
+				$method->isDestructor()) {
 				continue;
+			}
 			$m = new IPReflectionMethod($this->classname, $method->name);
 			if((!$m->isPrivate() || $alsoPrivate) && (!$m->isProtected() || $alsoProtected) && (($m->getDeclaringClass()->name == $this->classname) || $alsoHerited))
 				$this->methods[$method->name] = $m;

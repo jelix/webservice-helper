@@ -48,6 +48,16 @@ class testWsdlWithArray {
 class testWsdlWithMixed {
 
 	/**
+	 * it shouldn't appear in the wsdl
+	 */
+	public function __construct() {}
+
+	/**
+	 * it shouldn't appear in the wsdl
+	 */
+	public function __get($name) {}
+
+	/**
 	 * @return void
 	 */
 	public function meth1($mx1) {}
