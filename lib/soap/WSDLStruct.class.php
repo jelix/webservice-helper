@@ -150,7 +150,9 @@ class WSDLStruct {
 
 				//output
 				//only when the operation returns something
-				if(!$operation->return || trim($operation->return) == "") throw new WSDLException('No return type for '.$operationName);
+				if(!$operation->return || trim($operation->return) == "") {
+					throw new WSDLException('No return type for '.$operationName, 1);
+				}
 				if(strtolower(trim($operation->return))!='void'){
 					$messageName = $operationName."Response";
 					$output = $this->addElement("wsdl:output", $operationTag);

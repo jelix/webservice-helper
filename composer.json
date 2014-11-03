@@ -12,6 +12,10 @@
         {
             "name": "David Kingma",
             "email": "david@jool.nl"
+        },
+        {
+            "name": "Laurent Jouanneau",
+            "email": "laurent@jelix.org"
         }
     ],
     "require": {

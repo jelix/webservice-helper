@@ -55,12 +55,14 @@ class IPXMLSchema {
 						$valueType = substr($property,($pos+2), (strlen($property)-7));
 						$el->$this->addTypeElement($valueType, $keyType, $tag);
 					}else{
-						throw new WSDLException("Error creating WSDL: expected \"=>\". When using the object() as type, use it as object(paramname=>paramtype,paramname2=>paramtype2)");
+						throw new WSDLException("Error creating WSDL: expected \"=>\". When using the object() as type, use it as object(paramname=>paramtype,paramname2=>paramtype2)", 100);
 					}
 				}
 			}else{ //should be a known class
 
-				if(!class_exists($name)) throw new WSDLException("Error creating WSDL: no class found with the name '$name' / $type : $parent, so how should we know the structure for this datatype?");
+				if(!class_exists($name)) {
+					throw new WSDLException("Error creating WSDL: no class found with the name '$name' / $type : $parent, so how should we know the structure for this datatype?", 101);
+				}
 				$v = new IPReflectionClass($name);
 				//TODO: check if the class extends another class?
 				$properties = $v->getProperties(false, false);//not protected and private properties
