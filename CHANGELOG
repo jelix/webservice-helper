@@ -1,0 +1,27 @@
+Changelog 1.5.1 (Laurent Jouanneau)
+- Improvements in @param in the doccomment parser and IPReflectionMethod::getParameters()
+  - more syntax check
+  - support of php mixed type
+  - support of "array" and "array()" type (not needed to indicate an additional type)
+- IPReflectionClass: add the alsoHerited param to getMethods and getProperties methods
+- Fix: WSDLException was not well initialized (there was no message)
+- Fix: constructor, destructor and magic methods were listed into the WSDL
+- Fix: notices and warning because of the use of deprecated PHP functions
+- Add a Composer.json file
+- Mode example and doc in their new directory
+- Add unit tests
+
+Changelog 1.5 (David Kingma)
+- New Rename and prefix classes, except the WSHelper class
+- Support literal and encoded services
+- Use new native get ReflectionProperty::getDocComment()
+- Catch any exceptions only in the service.php (and rethrow a soapFault with the exception
+  message) to allow for better error handling and database transaction revert
+- Revamp the template system to use XSLTemplate class
+- All IPReflection classes now support annotations
+- Fix bug with parameter order
+- Fix bug with method calls without parameters (Shawn Cook)
+- Fix: don't create a reflection object, unless it's needed for WSDL generation
+  or documentation
+- Use native ob_gz output compression callback
+- Support persistence settings
