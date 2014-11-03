@@ -32,6 +32,17 @@ class testReflectionMethodClass {
 	 */
 	function meth6(testParamMethod2 $paramObj, $arr) {}
 
+	/**
+	 * @externalparam integer foo
+	 */
+	function meth7() {}
+
+	/**
+	 * @param testParamMethod lorem1 ipsum1
+	 * @externalparam integer $foo something
+	 * @param array lorem2 ipsum2
+	 */
+	function meth8(testParamMethod2 $paramObj, $arr) {}
 }
 
 
@@ -93,6 +104,21 @@ class reflectionMethodTests  extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('testParamMethod2', $p->type);
 		$p = $parameters['arr'];
 		$this->assertEquals('array', $p->type);
+	}
+
+
+	function testExternalAndStaticParameters() {
+		$ref = new IPReflectionMethod('testReflectionMethodClass', 'meth8');
+		$parameters = $ref->getParameters();
+		$this->assertArrayHasKey('paramObj', $parameters);
+		$this->assertArrayHasKey('arr', $parameters);
+		$this->assertArrayHasKey('foo', $parameters);
+		$p = $parameters['paramObj'];
+		$this->assertEquals('testParamMethod2', $p->type);
+		$p = $parameters['arr'];
+		$this->assertEquals('array', $p->type);
+		$p = $parameters['foo'];
+		$this->assertEquals('integer', $p->type);
 	}
 
 }

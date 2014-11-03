@@ -93,6 +93,11 @@ class IPReflectionMethod extends reflectionMethod{
 			}
 			$this->parameters[$parameter->name] = $parameter;
 		}
+		if (isset($this->externalParams)) {
+			foreach($this->externalParams as $param) {
+				$this->parameters[$param->name] = $param;
+			}
+		}
 		return $this->parameters;
 	}
 

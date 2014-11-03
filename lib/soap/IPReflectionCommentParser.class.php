@@ -133,6 +133,18 @@ class IPReflectionCommentParser{
 				$o->comment = implode(" ",$tagArr);
 				$this->obj->params[] = $o;
 				break;
+			case 'externalparam':
+				// external parameter, to declare soap parameter that are not method
+				// parameters
+				$o = new stdClass();
+				if (count($tagArr) < 2) {
+					throw new Exception('Not enough parameters on @externalparam '.$tagLine);
+				}
+				$o->type = trim(array_shift($tagArr));
+				$o->name = ltrim(array_shift($tagArr), '$');
+				$o->comment = implode(" ",$tagArr);
+				$this->obj->externalParams[] = $o;
+				break;
 			case 'return':
 				if (isset($tagArr[0])) {
 					$this->obj->return = trim($tagArr[0]);

@@ -147,6 +147,37 @@ class commentParserTests  extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('foo bar baz', $o->comment);
 	}
 
+	function testExternalParam() {
+		$comment = "	/**
+		* @externalparam object \$foo lorem ipsum
+		*/";
+		$obj = new testCommentClass();
+		$parser = new IPReflectionCommentParser($comment, $obj);
+
+		$this->assertEquals(1 , count($obj->externalParams));
+		$o = $obj->externalParams[0];
+		$this->assertEquals('object', $o->type);
+		$this->assertEquals('foo', $o->name);
+		$this->assertEquals('lorem ipsum', $o->comment);
+
+		$comment = "	/**
+		* @externalparam object \$foo lorem ipsum
+		* @externalparam string \$bar foo bar baz
+		*/";
+		$obj = new testCommentClass();
+		$parser = new IPReflectionCommentParser($comment, $obj);
+
+		$this->assertEquals(2 , count($obj->externalParams));
+		$o = $obj->externalParams[0];
+		$this->assertEquals('object', $o->type);
+		$this->assertEquals('foo', $o->name);
+		$this->assertEquals('lorem ipsum', $o->comment);
+		$o = $obj->externalParams[1];
+		$this->assertEquals('string', $o->type);
+		$this->assertEquals('bar', $o->name);
+		$this->assertEquals('foo bar baz', $o->comment);
+	}
+
 	function testVar() {
 		$comment = "	/**
 		* @var string lorem ipsum
