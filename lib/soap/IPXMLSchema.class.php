@@ -28,8 +28,9 @@ class IPXMLSchema {
 	public function addComplexType($type, $name = false, $parent = false) {
 		if(!$parent){//outline element
 			//check if the complexType doesn't already exists
-			if(isset($this->types[$name])) return $this->types[$name];
-
+			if(isset($this->types[$name])) {
+				return $this->types[$name];
+			}
 			//create the complexType tag beneath the xsd:schema tag
 			$complexTypeTag=$this->addElement("xsd:complexType", $this->parentElement);
 			if($name){//might be an anonymous element
@@ -41,9 +42,10 @@ class IPXMLSchema {
 		}
 
 		//check if its an array
-		if(strtolower(substr($type,0,6)) == 'array(' || substr($type,-2) == '[]'){
+		if(strtolower($type) == 'array' || strtolower(substr($type,0,6)) == 'array(' || substr($type,-2) == '[]'){
 			$this->addArray($type,$complexTypeTag);
-		}else{//it should be an object
+		}
+		else {//it should be an object
 			$tag=$this->addElement("xsd:all", $complexTypeTag);
 			//check if it has the name 'object()' (kind of a stdClass)
 			if(strtolower(substr($type,0,6)) == 'object'){//stdClass
@@ -124,16 +126,24 @@ class IPXMLSchema {
 		$rs = $this->addElement("xsd:restriction", $cc);
 		$rs->setAttribute("base", "SOAP-ENC:Array");
 
-		$type = (substr($type,-2) == '[]') ? substr($type, 0, (strlen($type)-2)) : substr($type, 6, (strlen($type)-7));
 		$el = $this->addElement("xsd:attribute", $rs);
 		$el->setAttribute("ref", "SOAP-ENC:arrayType");
 
+		if (strtolower($type) == 'array' || strtolower($type) == 'array()') {
+			$el->setAttribute("wsdl:arrayType", "xsd:anyType[]");
+			return $el;
+		}
+
+		$shortNotation = (substr($type,-2) == '[]');
+		$type =  $shortNotation ? substr($type, 0, -2) : substr($type, 6, -1);
+
 		//check if XML Schema datatype
-		if($t = $this->checkSchemaType(strtolower($type)))
+		if($t = $this->checkSchemaType(strtolower($type))) {
 				$el->setAttribute("wsdl:arrayType", "xsd:".$t."[]");
+		}
 		else{//no XML Schema datatype
 			//if valueType==Array, then create anonymouse inline complexType (within element tag without type attribute)
-			if(substr($type,-2) == '[]'){
+			if (substr($type,-2) == '[]'){
 				$this->addComplexType($type, false, $el);
 			}else{//else, new complextype, outline (element with 'ref' attrib)
 				$el->setAttribute("wsdl:arrayType", "tns:".$type."[]");
@@ -155,8 +165,12 @@ class IPXMLSchema {
 			  "integer" => "int",
 			  "boolean" => "boolean",
 			  "float" => "float");
-		if(isset($types[$type])) return $types[$type];
-		else return false;
+		if(isset($types[$type])) {
+			return $types[$type];
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
