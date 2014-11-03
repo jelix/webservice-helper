@@ -171,4 +171,21 @@ class commentParserTests  extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('lorem ipsum', $obj->description);
 	}
 
+	function testReturn() {
+		$comment = "	/**
+		* @return
+		*/";
+		$obj = new testCommentClass();
+		$parser = new IPReflectionCommentParser($comment, $obj);
+
+		$this->assertEquals('', $obj->return);
+		$comment = "	/**
+		* @return void
+		*/";
+		$obj = new testCommentClass();
+		$parser = new IPReflectionCommentParser($comment, $obj);
+
+		$this->assertEquals('void', $obj->return);
+	}
+
 }

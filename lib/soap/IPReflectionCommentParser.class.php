@@ -107,7 +107,9 @@ class IPReflectionCommentParser{
 			case 'abstract':
 				$this->obj->abstract = true; break;
 			case 'access':
-				$this->obj->isPrivate = (strtolower(trim($tagArr[0]))=="private")?true:false;
+				if (isset($tagArr[0])) {
+					$this->obj->isPrivate = (strtolower(trim($tagArr[0]))=="private")?true:false;
+				}
 				break;
 			case 'author':
 				$this->obj->author = implode(" ",$tagArr);
@@ -121,7 +123,9 @@ class IPReflectionCommentParser{
 				break;
 			case 'extends': break;
 			case 'global':
-				$this->obj->globals[] = $tagArr[0];
+				if (isset($tagArr[0])) {
+					$this->obj->globals[] = $tagArr[0];
+				}
 				break;
 			case 'param':
 				$o = new stdClass();
@@ -130,11 +134,17 @@ class IPReflectionCommentParser{
 				$this->obj->params[] = $o;
 				break;
 			case 'return':
-				$this->obj->return = trim($tagArr[0]); break;
+				if (isset($tagArr[0])) {
+					$this->obj->return = trim($tagArr[0]);
+				}
+				break;
 			case 'link':break;
 			case 'see':break;
 			case 'since':
-				$this->obj->since = trim($tagArr[0]); break;
+				if (isset($tagArr[0])) {
+					$this->obj->since = trim($tagArr[0]);
+				}
+				break;
 			case 'static':
 				$this->obj->static = true; break;
 			case 'throws':
@@ -152,7 +162,9 @@ class IPReflectionCommentParser{
 				$this->obj->description = trim(str_replace(array("[OPTIONAL]","[AUTOINCREMENT]"), "", $comment));
 				break;
 			case 'version':
-				$this->obj->version = $tagArr[0];
+				if (isset($tagArr[0])) {
+					$this->obj->version = $tagArr[0];
+				}
 				break;
 			default:
 			  //echo "\nno valid tag: '".strtolower($tag)."' at tagline: '$tagLine' <br>";
