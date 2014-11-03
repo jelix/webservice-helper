@@ -83,7 +83,6 @@ class WSHelper {
 		if(!in_array($this->name, $this->classNameArr))
 			throw new Exception("No valid webservice class.");
 
-		//@TODO: nog een mooie oplossing voor het cachen zoeken
 		header("Content-type: text/xml");
 		if($this->useWSDLCache && file_exists($this->wsdlfile)){
 			readfile($this->wsdlfile);

@@ -50,7 +50,7 @@ class IPXMLSchema {
 			//check if it has the name 'object()' (kind of a stdClass)
 			if(strtolower(substr($type,0,6)) == 'object'){//stdClass
 				$content = substr($type, 7, (strlen($type)-1));
-				$properties = split(",", $content);//split the content into properties
+				$properties = explode(",", $content);//split the content into properties
 				foreach((array)$properties as $property){
 					if($pos = strpos($property, "=>")){//array with keys (order is important, so use 'sequence' tag)
 						$keyType = substr($property,6,($pos-6));
@@ -66,7 +66,6 @@ class IPXMLSchema {
 					throw new WSDLException("Error creating WSDL: no class found with the name '$name' / $type : $parent, so how should we know the structure for this datatype?", 101);
 				}
 				$v = new IPReflectionClass($name);
-				//TODO: check if the class extends another class?
 				$properties = $v->getProperties(false, false, false);//not protected and private properties
 
 				foreach((array) $properties as $property){

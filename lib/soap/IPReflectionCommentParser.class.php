@@ -167,7 +167,6 @@ class IPReflectionCommentParser{
 				}
 				break;
 			default:
-			  //echo "\nno valid tag: '".strtolower($tag)."' at tagline: '$tagLine' <br>";
 				//do nothing
 		}
 	}

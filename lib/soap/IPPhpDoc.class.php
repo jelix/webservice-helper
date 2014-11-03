@@ -47,7 +47,6 @@ class IPPhpDoc{
 	}
 	/**
 	 * Generates the documentation page with all classes, methods etc.
-	 * @TODO FIXME: use the new template class
 	 * @param string Template file (optional)
 	 * @return string
 	 */
