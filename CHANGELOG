@@ -7,6 +7,7 @@ Changelog 1.5.1 (Laurent Jouanneau)
 - Fix: WSDLException was not well initialized (there was no message)
 - Fix: constructor, destructor and magic methods were listed into the WSDL
 - Fix: notices and warning because of the use of deprecated PHP functions
+- Fix: WSHelper::createWSDL() should not die on exception.
 - Add a Composer.json file
 - Mode example and doc in their new directory
 - Add unit tests

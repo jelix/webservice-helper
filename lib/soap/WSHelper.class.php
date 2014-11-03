@@ -98,14 +98,7 @@ class WSHelper {
 		$this->class = new IPReflectionClass($this->name);
 		$wsdl = new WSDLStruct($this->uri, "http://".$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']."?class=".$this->name, $this->type, $this->use);
 		$wsdl->setService($this->class);
-
-		try {
-			$gendoc = $wsdl->generateDocument();
-		} catch (WSDLException $exception) {
-   			$exception->Display();
-   			exit();
-		}
-		
+		$gendoc = $wsdl->generateDocument();
 		$fh = fopen($this->wsdlfile, "w+");
 		fwrite($fh, $gendoc);
 		fclose($fh);
