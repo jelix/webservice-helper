@@ -112,7 +112,7 @@ class IPPhpDoc{
 			}
 			return $obi;
 		}
-		throw new Exception("Cannot find annotation @$annotationName ($start, $end): {$this->comment} ");
+		throw new Exception("Cannot find annotation @$annotationName ($start, $end) in the comment: $comment ");
 	}
 
 }
