@@ -1,3 +1,8 @@
+Changelog 1.5.2 (Laurent Jouanneau)
+- Add support of "object" type (recognized as stdClass type)
+- Add Support of @externalparam
+- Fix support of object(..) type notation
+
 Changelog 1.5.1 (Laurent Jouanneau)
 - Improvements in @param in the doccomment parser and IPReflectionMethod::getParameters()
   - more syntax check

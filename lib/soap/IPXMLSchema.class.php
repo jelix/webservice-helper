@@ -49,14 +49,14 @@ class IPXMLSchema {
 			$tag=$this->addElement("xsd:all", $complexTypeTag);
 			//check if it has the name 'object()' (kind of a stdClass)
 			if(strtolower(substr($type,0,6)) == 'object'){//stdClass
-				$content = substr($type, 7, (strlen($type)-1));
+				$content = substr($type, 7, -1);
 				$properties = explode(",", $content);//split the content into properties
-				foreach((array)$properties as $property){
-					if($pos = strpos($property, "=>")){//array with keys (order is important, so use 'sequence' tag)
-						$keyType = substr($property,6,($pos-6));
-						$valueType = substr($property,($pos+2), (strlen($property)-7));
-						$el->$this->addTypeElement($valueType, $keyType, $tag);
-					}else{
+				foreach ($properties as $property) {
+					if (strpos($property, "=>") !== false){//array with keys (order is important, so use 'sequence' tag)
+						list($keyType, $valueType) = explode('=>', $property);
+						$el = $this->addTypeElement($valueType, $keyType, $tag);
+					}
+					else {
 						throw new WSDLException("Error creating WSDL: expected \"=>\". When using the object() as type, use it as object(paramname=>paramtype,paramname2=>paramtype2)", 100);
 					}
 				}

@@ -130,6 +130,9 @@ class IPReflectionCommentParser{
 			case 'param':
 				$o = new stdClass();
 				$o->type = trim(array_shift($tagArr));
+				if ($o->type == 'object') {
+					$o->type = 'stdClass';
+				}
 				$o->comment = implode(" ",$tagArr);
 				$this->obj->params[] = $o;
 				break;
@@ -141,6 +144,9 @@ class IPReflectionCommentParser{
 					throw new Exception('Not enough parameters on @externalparam '.$tagLine);
 				}
 				$o->type = trim(array_shift($tagArr));
+				if ($o->type == 'object') {
+					$o->type = 'stdClass';
+				}
 				$o->name = ltrim(array_shift($tagArr), '$');
 				$o->comment = implode(" ",$tagArr);
 				$this->obj->externalParams[] = $o;
@@ -148,6 +154,9 @@ class IPReflectionCommentParser{
 			case 'return':
 				if (isset($tagArr[0])) {
 					$this->obj->return = trim($tagArr[0]);
+					if ($this->obj->return == 'object') {
+						$this->obj->return = 'stdClass';
+					}
 				}
 				break;
 			case 'link':break;

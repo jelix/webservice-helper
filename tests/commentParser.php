@@ -128,7 +128,7 @@ class commentParserTests  extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(1 , count($obj->params));
 		$o = $obj->params[0];
-		$this->assertEquals('object', $o->type);
+		$this->assertEquals('stdClass', $o->type);
 		$this->assertEquals('lorem ipsum', $o->comment);
 
 		$comment = "	/**
@@ -140,7 +140,7 @@ class commentParserTests  extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(2 , count($obj->params));
 		$o = $obj->params[0];
-		$this->assertEquals('object', $o->type);
+		$this->assertEquals('stdClass', $o->type);
 		$this->assertEquals('lorem ipsum', $o->comment);
 		$o = $obj->params[1];
 		$this->assertEquals('string', $o->type);
@@ -156,7 +156,7 @@ class commentParserTests  extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(1 , count($obj->externalParams));
 		$o = $obj->externalParams[0];
-		$this->assertEquals('object', $o->type);
+		$this->assertEquals('stdClass', $o->type);
 		$this->assertEquals('foo', $o->name);
 		$this->assertEquals('lorem ipsum', $o->comment);
 
@@ -169,7 +169,7 @@ class commentParserTests  extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(2 , count($obj->externalParams));
 		$o = $obj->externalParams[0];
-		$this->assertEquals('object', $o->type);
+		$this->assertEquals('stdClass', $o->type);
 		$this->assertEquals('foo', $o->name);
 		$this->assertEquals('lorem ipsum', $o->comment);
 		$o = $obj->externalParams[1];
