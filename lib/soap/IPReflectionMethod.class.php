@@ -88,7 +88,7 @@ class IPReflectionMethod extends reflectionMethod{
 					$parameter->type = $this->params[$i]->type;
 				}
 				else {
-					$parameter->type = 'string';
+					$parameter->type = 'mixed';
 				}
 			}
 			$this->parameters[$parameter->name] = $parameter;

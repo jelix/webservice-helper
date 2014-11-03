@@ -45,11 +45,27 @@ class testWsdlWithArray {
 
 }
 
+class testWsdlWithMixed {
+
+	/**
+	 * @return void
+	 */
+	public function meth1($mx1) {}
+
+	/**
+	 * @param mixed foo
+	 * @return void
+	 */
+	public function meth2($mx2) {}
+
+	/**
+	 * @param mixed[] foo
+	 * @return void
+	 */
+	public function meth3($mx3) {}
+}
+
 class testClassForWsdl {
-
-	/** @var string a property */
-	public $prop = "";
-
 
 	function meth1(testParamMethod $paramObj, array $arr) {}
 
@@ -251,4 +267,75 @@ class wsdlGenerationTests  extends PHPUnit_Framework_TestCase {
 		$expected .='</wsdl:definitions>'."\n";
 		$this->assertEquals($expected, $gendoc);
 	}
+
+	function testWsdlWithMixed() {
+		$class = new IPReflectionClass('testWsdlWithMixed');
+		$wsdl = new WSDLStruct('http://localhost/my/namespace', 'http://localhost/wsdl/uri' );
+		$wsdl->setService($class);
+		$gendoc = $wsdl->generateDocument();
+		$gendoc = str_replace("><", ">\n<", $gendoc);
+		$expected = '<'.'?xml version="1.0"?'.'>'. "\n";
+		$expected .='<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://localhost/my/namespace" targetNamespace="http://localhost/my/namespace">'."\n";
+		$expected .=	'<wsdl:types>'."\n";
+		$expected .=		'<xsd:schema targetNamespace="http://localhost/my/namespace">'."\n";
+		$expected .=			'<xsd:complexType name="mixedArray">'."\n";
+		$expected .=				'<xsd:complexContent>'."\n";
+		$expected .=					'<xsd:restriction base="SOAP-ENC:Array">'."\n";
+		$expected .=						'<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="xsd:anyType[]"/>'."\n";
+		$expected .=					'</xsd:restriction>'."\n";
+		$expected .=				'</xsd:complexContent>'."\n";
+		$expected .=			'</xsd:complexType>'."\n";
+		$expected .=		'</xsd:schema>'."\n";
+		$expected .=	'</wsdl:types>'."\n";
+		$expected .=	'<message name="meth1Request">'."\n";
+		$expected .=		'<part name="mx1" type="xsd:anyType"/>'."\n";
+		$expected .=	'</message>'."\n";
+		$expected .=	'<message name="meth2Request">'."\n";
+		$expected .=		'<part name="mx2" type="xsd:anyType"/>'."\n";
+		$expected .=	'</message>'."\n";
+		$expected .=	'<message name="meth3Request">'."\n";
+		$expected .=		'<part name="mx3" type="tns:mixedArray"/>'."\n";
+		$expected .=	'</message>'."\n";
+		$expected .=	'<wsdl:portType name="testWsdlWithMixedPortType">'."\n";
+		$expected .=		'<wsdl:operation name="meth1">'."\n";
+		$expected .=			'<wsdl:input message="tns:meth1Request"/>'."\n";
+		$expected .=		'</wsdl:operation>'."\n";
+		$expected .=		'<wsdl:operation name="meth2">'."\n";
+		$expected .=			'<wsdl:input message="tns:meth2Request"/>'."\n";
+		$expected .=		'</wsdl:operation>'."\n";
+		$expected .=		'<wsdl:operation name="meth3">'."\n";
+		$expected .=			'<wsdl:input message="tns:meth3Request"/>'."\n";
+		$expected .=		'</wsdl:operation>'."\n";
+		$expected .=	'</wsdl:portType>'."\n";
+		$expected .=	'<binding name="testWsdlWithMixedBinding" type="tns:testWsdlWithMixedPortType">'."\n";
+		$expected .=		'<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>'."\n";
+		$expected .=		'<wsdl:operation name="meth1">'."\n";
+		$expected .=			'<soap:operation soapAction="http://localhost/wsdl/uri&amp;method=meth1" style="rpc"/>'."\n";
+		$expected .=			'<wsdl:input>'."\n";
+		$expected .=				'<soap:body use="encoded" namespace="http://localhost/my/namespace" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>'."\n";
+		$expected .=			'</wsdl:input>'."\n";
+		$expected .=		'</wsdl:operation>'."\n";
+		$expected .=		'<wsdl:operation name="meth2">'."\n";
+		$expected .=			'<soap:operation soapAction="http://localhost/wsdl/uri&amp;method=meth2" style="rpc"/>'."\n";
+		$expected .=			'<wsdl:input>'."\n";
+		$expected .=				'<soap:body use="encoded" namespace="http://localhost/my/namespace" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>'."\n";
+		$expected .=			'</wsdl:input>'."\n";
+		$expected .=		'</wsdl:operation>'."\n";
+		$expected .=		'<wsdl:operation name="meth3">'."\n";
+		$expected .=			'<soap:operation soapAction="http://localhost/wsdl/uri&amp;method=meth3" style="rpc"/>'."\n";
+		$expected .=			'<wsdl:input>'."\n";
+		$expected .=				'<soap:body use="encoded" namespace="http://localhost/my/namespace" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>'."\n";
+		$expected .=			'</wsdl:input>'."\n";
+		$expected .=		'</wsdl:operation>'."\n";
+		$expected .=	'</binding>'."\n";
+		$expected .=	'<wsdl:service name="testWsdlWithMixed">'."\n";
+		$expected .=		'<wsdl:port name="testWsdlWithMixedPort" binding="tns:testWsdlWithMixedBinding">'."\n";
+		$expected .=			'<soap:address location="http://localhost/wsdl/uri"/>'."\n";
+		$expected .=		'</wsdl:port>'."\n";
+		$expected .=	'</wsdl:service>'."\n";
+		$expected .='</wsdl:definitions>'."\n";
+		$this->assertEquals($expected, $gendoc);
+	}
+
+
 }

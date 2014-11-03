@@ -48,7 +48,7 @@ class reflectionMethodTests  extends PHPUnit_Framework_TestCase {
 		$parameters = $ref->getParameters();
 		$this->assertArrayHasKey('param', $parameters);
 		$p = $parameters['param'];
-		$this->assertEquals('string', $p->type);
+		$this->assertEquals('mixed', $p->type);
 	}
 
 	function testTwoTypedParameters() {
@@ -70,7 +70,7 @@ class reflectionMethodTests  extends PHPUnit_Framework_TestCase {
 		$p = $parameters['paramObj'];
 		$this->assertEquals('testParamMethod', $p->type);
 		$p = $parameters['arr'];
-		$this->assertEquals('string', $p->type);
+		$this->assertEquals('mixed', $p->type);
 	}
 
 	function testTwoCommentedParameters() {

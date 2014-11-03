@@ -164,7 +164,8 @@ class IPXMLSchema {
 			  "int" => "int",
 			  "integer" => "int",
 			  "boolean" => "boolean",
-			  "float" => "float");
+			  "float" => "float",
+			  "mixed" => "anyType");
 		if(isset($types[$type])) {
 			return $types[$type];
 		}
