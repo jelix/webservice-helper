@@ -30,5 +30,8 @@
     "autoload": {
         "classmap": [ "lib/soap/" ]
     },
+    "archive": {
+        "exclude": ["/tests", "/example", "/doc"]
+    },
     "minimum-stability": "stable"
 }
