@@ -10,13 +10,31 @@ class IPXMLSchema {
 	/** @var domelement[] Array with references to all known types in this schema */
 	private $types = Array();
 	
-	/** @var boolean True=place array's inline */
-	private $array_inline = false;
-	
 	public function __construct(domelement $parentElement){
 		$this->parentElement = $parentElement;
 	}
-	
+
+	public function addType($type, $name, $xmlelement) {
+		$xmlelement->setAttribute("name", $name);
+		//check if it is a valid XML Schema datatype
+		if ($t = self::checkSchemaType(strtolower($type))) {
+			$xmlelement->setAttribute("type", "xsd:".$t);
+		}
+		//no XML Schema datatype
+		//if valueType==Array, then create anonymouse inline complexType (within element
+		// tag without type attribute)
+		else if (substr($type,-2) == "[]") {
+			//If it is an array, change the type name
+			$name = substr($type,0,-2)."Array";
+			$xmlelement->setAttribute("type", "tns:".$name);
+			$this->addComplexType($type, $name);
+		}
+		else {
+			$xmlelement->setAttribute("type", "tns:".$type);
+			$this->addComplexType($type, $type);
+		}
+	}
+
 	/**
 	 * Ads a complexType tag with xmlschema content to the types tag
 	 * @param string The variable type (Array or class name)
@@ -24,7 +42,6 @@ class IPXMLSchema {
 	 * @param domNode Used when adding an inline complexType
 	 * @return domNode The complexType node
 	 */
-	
 	public function addComplexType($type, $name = false, $parent = false) {
 		if(!$parent){//outline element
 			//check if the complexType doesn't already exists
@@ -89,31 +106,11 @@ class IPXMLSchema {
 	 */
 	public function addTypeElement($type, $name, $parent, $optional = false) {
 		$el = $this->addElement("xsd:element", $parent);
-		$el->setAttribute("name", $name);
-		
 		if($optional){//if it's an optional property, set minOccur to 0
 			$el->setAttribute("minOccurs", "0");
 			$el->setAttribute("maxOccurs", "1");
 		}
-		
-		//check if XML Schema datatype
-		if($t = $this->checkSchemaType(strtolower($type)))
-				$el->setAttribute("type", "xsd:".$t);
-		else{//no XML Schema datatype
-			//if valueType==Array, then create anonymouse inline complexType (within element tag without type attribute)
-			if(substr($type,-2) == '[]'){
-				if($this->array_inline){
-					$this->addComplexType($type, false, $el);
-				}else{
-					$name = substr($type, 0, -2)."Array";
-					$el->setAttribute("type", "tns:".$name);
-					$this->addComplexType($type, $name, false);
-				}
-			}else{//else, new complextype, outline (element with 'ref' attrib)
-				$el->setAttribute("type", "tns:".$type);
-				$this->addComplexType($type, $type);
-			}
-		}
+		$this->addType($type, $name, $el);
 		return $el;
 	}
 
@@ -137,7 +134,7 @@ class IPXMLSchema {
 		$type =  $shortNotation ? substr($type, 0, -2) : substr($type, 6, -1);
 
 		//check if XML Schema datatype
-		if($t = $this->checkSchemaType(strtolower($type))) {
+		if($t = self::checkSchemaType(strtolower($type))) {
 				$el->setAttribute("wsdl:arrayType", "xsd:".$t."[]");
 		}
 		else{//no XML Schema datatype
@@ -151,7 +148,7 @@ class IPXMLSchema {
 		}
 		return $el;
 	}
-	
+
 	/**
 	 * Checks if the given type is a valid XML Schema type or can be casted to a schema type
 	 * @param string The datatype
@@ -189,4 +186,3 @@ class IPXMLSchema {
 		return $el;
 	}
 }
-?>

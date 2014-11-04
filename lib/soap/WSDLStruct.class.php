@@ -28,7 +28,7 @@ class WSDLStruct {
 	/** @var int use: SOAP_LITERAL | SOAP_ENCODED */
 	public $use;
 	/************************** Private properties ***************************/
-	
+
 	/** @var SOAPService[] */
 	private $services = Array();
 
@@ -38,38 +38,38 @@ class WSDLStruct {
 	/** @var domElement[] */
 	private $operationTags = Array();
 
-		/** @var domElement[] references to the portType tags. servicename as key */
+	/** @var domElement[] references to the portType tags. servicename as key */
 	private $portTypeTags = Array();
-	
+
 	/** @var domElement[] references to the binding tags. servicename as key */
 	private $bindingTags = Array();
-	
+
 	/** @var domElement[] references to the binding operation tags. servicename as first key, operationname as second */
 	private $bindingOperationTags = Array();
-	
+
 	/** @var domDocument */
 	private $doc;
-	
+
 	/** @var domelement */
 	private $definitions;
 
 	/** @var domelement Refference tot the types tag*/
 	private $typesTag;
-	
+
 	/** @var domelement Refference to the xsd:schema tag*/
 	private $xsdSchema;
 
 	/** @var IPXMLSchema */
 	private $xmlSchema;
-	
+
 	//namespaces used
 	const NS_WSDL = "http://schemas.xmlsoap.org/wsdl/";
 	const NS_SOAP = "http://schemas.xmlsoap.org/wsdl/soap/";
 	const NS_ENC  = "http://schemas.xmlsoap.org/soap/encoding/"; 
 	const NS_XSD  = "http://www.w3.org/2001/XMLSchema";
-	
+
 	const CREATE_EMPTY_INPUTS = true;
-	
+
 	/*
 	 * @param string Target namespace
 	 * @param string URL for the webservice
@@ -103,12 +103,13 @@ class WSDLStruct {
 		$this->services[$class->classname] = $class;
 		$this->services[$class->classname]->getMethods(false, false);
 	}
+
 	/**
 	 * @return string The WSDL document for this structure
 	 */
 	public function generateDocument(){
 		$this->addToDebug("Generating document");
-		
+
 		//add all definitions
 		$definitions=$this->definitions;
 		$definitions->setAttribute("xmlns", 			self::NS_WSDL);
@@ -147,7 +148,6 @@ class WSDLStruct {
 					$this->addInput($this->bindingOperationTags[$serviceName][$operationName]);
 				}
 
-
 				//output
 				//only when the operation returns something
 				if(!$operation->return || trim($operation->return) == "") {
@@ -164,14 +164,14 @@ class WSDLStruct {
 			// SH. now add the portType and binding
 			$this->definitions->AppendChild($portType);
 			$this->definitions->AppendChild($binding);
-			
+
 			//add the service
 			$this->addService($serviceName);
-			
+
 		}
 		return $this->doc->saveXML();
 	}
-	
+
 	/**
 	 * Adds a new operation to the given service
 	 * @param string operation name
@@ -186,7 +186,7 @@ class WSDLStruct {
 		//create operation tag for binding
 		$bindingOperationTag = $this->addElement("wsdl:operation",$this->bindingTags[$serviceName]);
 		$bindingOperationTag->setAttribute("name",$operationName);
-	
+
 		//soap operation tag
 		$soapOperationTag = $this->addElement("soap:operation",$bindingOperationTag);
 		$soapOperationTag->setAttribute("soapAction",$this->url."&method=".$operationName);
@@ -195,11 +195,11 @@ class WSDLStruct {
 		//save references
 		$this->operationTags[$serviceName][$operationName] = $operationTag;
 		$this->bindingOperationTags[$serviceName][$operationName] = $bindingOperationTag;
-		
+
 		//and return
 		return $operationTag;
 	}
-	
+
 	/**
 	 * adds a new service tag to the WSDL file
 	 * @param string the service name
@@ -225,7 +225,7 @@ class WSDLStruct {
 		//and return
 		return $serviceTag;
 	}
-	
+
 	/** 
 	 * Adds a new portType to the WSDL structure
 	 * @param string the service name for which we create a portType
@@ -243,7 +243,7 @@ class WSDLStruct {
 		//and return
 		return $portTypeTag;
 	}
-	
+
 	/**
 	 * Adds a new binding to the WSDL structure
 	 * @param string serviceName to bind
@@ -256,18 +256,18 @@ class WSDLStruct {
 		$bindingTag=$this->addElement("binding",$this->definitions);
 		$bindingTag->setAttribute("name", $serviceName."Binding");
 		$bindingTag->setAttribute("type", "tns:".$serviceName."PortType");
-		
+
 			//soap binding tag
 			$soapBindingTag = $this->addElement("soap:binding", $bindingTag);
 			$soapBindingTag->setAttribute("style", ($this->binding_style == SOAP_RPC)? "rpc" : "document");
 			$soapBindingTag->setAttribute("transport", "http://schemas.xmlsoap.org/soap/http");
-			
+
 		//keep a reference
 		$this->bindingTags[$serviceName] = $bindingTag;
 		//and return
 		return $bindingTag;
 	}
-	
+
 	/**
 	 * Adds a message tag to the WSDL document
 	 * @param string Message name
@@ -279,19 +279,8 @@ class WSDLStruct {
 		$msg->setAttribute("name", $name);
 		foreach((array)$parts as $partName => $partType){
 			$this->addToDebug("Adding Message part: '$partName => $partType'");
-			$part=$this->addElement("part", $msg);
-			$part->setAttribute("name", $partName);
-
-			//check if it is a valid XML Schema datatype
-			if($t = IPXMLSchema::checkSchemaType(strtolower($partType)))
-				$part->setAttribute("type", "xsd:".$t);
-			else{
-				//If it is an array, change the type name
-				$partName = (substr($partType,-2) == "[]")?substr($partType,0,strpos($partType,"["))."Array":$partType;
-
-				$part->setAttribute("type", "tns:".$partName);
-				$this->xmlSchema->addComplexType($partType, $partName);
-			}
+			$part = $this->addElement("part", $msg);
+			$this->xmlSchema->addType($partType, $partName, $part);
 		}
 	}
 
@@ -342,4 +331,3 @@ class WSDLStruct {
 		return $el;
 	}
 }
-?>
