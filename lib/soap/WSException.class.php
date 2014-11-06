@@ -9,7 +9,8 @@ class WSException extends Exception {
  	 * @return void 
  	 */
 	public function __construct($msg) { 
-		$this->msg = $msg; 
+		$this->msg = $msg;
+		parent::__construct($msg, 1);
 	} 
  	/** 
  	 * @return void 
