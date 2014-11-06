@@ -107,6 +107,29 @@ class testWsdlWithObject {
 
 }
 
+
+
+class testWsdlWithAssocArray {
+
+	/**
+     * @param string[=>]
+	 * @return void
+	 */
+	function meth1($arr1) {}
+
+	/**
+	 * @param testWsdlSimpleClass[=>] something
+	 * @return integer[=>]
+	 */
+	function meth2($arr2) {}
+
+	/**
+	 * @param array(testWsdlSimpleClass[=>])
+	 * @return void
+	 */
+	function meth3($arr3) {}
+}
+
 class wsdlGenerationTests  extends PHPUnit_Framework_TestCase {
 
 	function testSimpleClass() {
@@ -439,7 +462,7 @@ class wsdlGenerationTests  extends PHPUnit_Framework_TestCase {
 		$expected .='</wsdl:definitions>'."\n";
 		$this->assertEquals($expected, $gendoc);
 	}
-/*
+
 	function testAssociativeArray() {
 		$class = new IPReflectionClass('testWsdlWithAssocArray');
 		$wsdl = new WSDLStruct('http://localhost/my/namespace', 'http://localhost/wsdl/uri' );
@@ -450,66 +473,66 @@ class wsdlGenerationTests  extends PHPUnit_Framework_TestCase {
 		$expected .='<wsdl:definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://localhost/my/namespace" targetNamespace="http://localhost/my/namespace">'."\n";
 		$expected .=	'<wsdl:types>'."\n";
 		$expected .=		'<xsd:schema targetNamespace="http://localhost/my/namespace">'."\n";
+
+		$expected .=			'<xsd:complexType name="AssociativeArrayOfstring">'."\n";
+		$expected .=				'<xsd:sequence>'."\n";
+		$expected .=					'<xsd:element name="item" minOccurs="0" maxOccurs="unbounded" type="tns:AssociativeArrayOfstring_item"/>'."\n";
+		$expected .=				'</xsd:sequence>'."\n";
+		$expected .=			'</xsd:complexType>'."\n";
+		$expected .=			'<xsd:complexType name="AssociativeArrayOfstring_item">'."\n";
+		$expected .=				'<xsd:sequence>'."\n";
+		$expected .=					'<xsd:element name="key" type="xsd:anyType"/>'."\n";
+		$expected .=					'<xsd:element name="value" type="xsd:string"/>'."\n";
+		$expected .=				'</xsd:sequence>'."\n";
+		$expected .=			'</xsd:complexType>'."\n";
+
 		$expected .=			'<xsd:complexType name="testWsdlSimpleClass">'."\n";
 		$expected .=				'<xsd:all/>'."\n";
 		$expected .=			'</xsd:complexType>'."\n";
-
-		$expected .=			'<xsd:complexType name="string[=&gt;]">'."\n";
+		$expected .=			'<xsd:complexType name="AssociativeArrayOftestWsdlSimpleClass">'."\n";
 		$expected .=				'<xsd:sequence>'."\n";
-		$expected .=					'<xsd:element name="item" minOccurs="0" maxOccurs="unbounded" type="tns:string[=&gt;]item"/>'."\n";
+		$expected .=					'<xsd:element name="item" minOccurs="0" maxOccurs="unbounded" type="tns:AssociativeArrayOftestWsdlSimpleClass_item"/>'."\n";
 		$expected .=				'</xsd:sequence>'."\n";
 		$expected .=			'</xsd:complexType>'."\n";
-		$expected .=			'<xsd:complexType name="string[=&gt;]item">'."\n";
+		$expected .=			'<xsd:complexType name="AssociativeArrayOftestWsdlSimpleClass_item">'."\n";
 		$expected .=				'<xsd:sequence>'."\n";
-		$expected .=					'<xsd:element name="key" type="xsd:string"/>'."\n";
-		$expected .=					'<xsd:element name="val" type="xsd:string"/>'."\n";
-		$expected .=				'</xsd:sequence>'."\n";
-		$expected .=			'</xsd:complexType>'."\n";
-
-		$expected .=			'<xsd:complexType name="testWsdlSimpleClass[=&gt;]">'."\n";
-		$expected .=				'<xsd:sequence>'."\n";
-		$expected .=					'<xsd:element name="item" minOccurs="0" maxOccurs="unbounded" type="tns:testWsdlSimpleClass[=&gt;]item"/>'."\n";
-		$expected .=				'</xsd:sequence>'."\n";
-		$expected .=			'</xsd:complexType>'."\n";
-		$expected .=			'<xsd:complexType name="testWsdlSimpleClass[=&gt;]item">'."\n";
-		$expected .=				'<xsd:sequence>'."\n";
-		$expected .=					'<xsd:element name="key" type="xsd:string"/>'."\n";
-		$expected .=					'<xsd:element name="val" type="tns:testWsdlSimpleClass"/>'."\n";
+		$expected .=					'<xsd:element name="key" type="xsd:anyType"/>'."\n";
+		$expected .=					'<xsd:element name="value" type="tns:testWsdlSimpleClass"/>'."\n";
 		$expected .=				'</xsd:sequence>'."\n";
 		$expected .=			'</xsd:complexType>'."\n";
 
-		$expected .=			'<xsd:complexType name="integer[=&gt;]">'."\n";
+		$expected .=			'<xsd:complexType name="AssociativeArrayOfint">'."\n";
 		$expected .=				'<xsd:sequence>'."\n";
-		$expected .=					'<xsd:element name="item" minOccurs="0" maxOccurs="unbounded" type="tns:integer[=&gt;]item"/>'."\n";
+		$expected .=					'<xsd:element name="item" minOccurs="0" maxOccurs="unbounded" type="tns:AssociativeArrayOfint_item"/>'."\n";
 		$expected .=				'</xsd:sequence>'."\n";
 		$expected .=			'</xsd:complexType>'."\n";
-		$expected .=			'<xsd:complexType name="integer[=&gt;]item">'."\n";
+		$expected .=			'<xsd:complexType name="AssociativeArrayOfint_item">'."\n";
 		$expected .=				'<xsd:sequence>'."\n";
-		$expected .=					'<xsd:element name="key" type="xsd:string"/>'."\n";
-		$expected .=					'<xsd:element name="val" type="xsd:integer"/>'."\n";
+		$expected .=					'<xsd:element name="key" type="xsd:anyType"/>'."\n";
+		$expected .=					'<xsd:element name="value" type="xsd:int"/>'."\n";
 		$expected .=				'</xsd:sequence>'."\n";
 		$expected .=			'</xsd:complexType>'."\n";
 
-		$expected .=			'<xsd:complexType name="array(testWsdlSimpleClass[=&gt;])">'."\n";
+		$expected .=			'<xsd:complexType name="ArrayOfAssociativeArrayOftestWsdlSimpleClass">'."\n";
 		$expected .=				'<xsd:complexContent>'."\n";
 		$expected .=					'<xsd:restriction base="SOAP-ENC:Array">'."\n";
-		$expected .=						'<xsd:attribute ref="SOAP-ENC:arrayType" type="tns:testWsdlSimpleClass[=&gt;]"/>'."\n";
+		$expected .=						'<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:AssociativeArrayOftestWsdlSimpleClass[]"/>'."\n";
 		$expected .=					'</xsd:restriction>'."\n";
 		$expected .=				'</xsd:complexContent>'."\n";
 		$expected .=			'</xsd:complexType>'."\n";
 		$expected .=		'</xsd:schema>'."\n";
 		$expected .=	'</wsdl:types>'."\n";
 		$expected .=	'<message name="meth1Request">'."\n";
-		$expected .=		'<part name="mx1" type="tns:string[=&gt;]"/>'."\n";
+		$expected .=		'<part name="arr1" type="tns:AssociativeArrayOfstring"/>'."\n";
 		$expected .=	'</message>'."\n";
 		$expected .=	'<message name="meth2Request">'."\n";
-		$expected .=		'<part name="mx2" type="tns:testWsdlSimpleClass[=&gt;]"/>'."\n";
+		$expected .=		'<part name="arr2" type="tns:AssociativeArrayOftestWsdlSimpleClass"/>'."\n";
 		$expected .=	'</message>'."\n";
 		$expected .=	'<message name="meth2Response">'."\n";
-		$expected .=		'<part name="meth2Return" type="tns:integer[=&gt;]"/>'."\n";
+		$expected .=		'<part name="meth2Return" type="tns:AssociativeArrayOfint"/>'."\n";
 		$expected .=	'</message>'."\n";
 		$expected .=	'<message name="meth3Request">'."\n";
-		$expected .=		'<part name="mx3" type="tns:array(testWsdlSimpleClass[=&gt;])"/>'."\n";
+		$expected .=		'<part name="arr3" type="tns:ArrayOfAssociativeArrayOftestWsdlSimpleClass"/>'."\n";
 		$expected .=	'</message>'."\n";
 		$expected .=	'<wsdl:portType name="testWsdlWithAssocArrayPortType">'."\n";
 		$expected .=		'<wsdl:operation name="meth1">'."\n";
@@ -547,7 +570,7 @@ class wsdlGenerationTests  extends PHPUnit_Framework_TestCase {
 		$expected .=			'</wsdl:input>'."\n";
 		$expected .=		'</wsdl:operation>'."\n";
 		$expected .=	'</binding>'."\n";
-		$expected .=	'<wsdl:service name="testWsdlWithAssocArrayClass">'."\n";
+		$expected .=	'<wsdl:service name="testWsdlWithAssocArray">'."\n";
 		$expected .=		'<wsdl:port name="testWsdlWithAssocArrayPort" binding="tns:testWsdlWithAssocArrayBinding">'."\n";
 		$expected .=			'<soap:address location="http://localhost/wsdl/uri"/>'."\n";
 		$expected .=		'</wsdl:port>'."\n";
@@ -556,5 +579,5 @@ class wsdlGenerationTests  extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals($expected, $gendoc);
 	}
-*/
+
 }

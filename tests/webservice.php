@@ -73,6 +73,57 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
         $r = $this->soapClient->addContacts($list);
         $this->assertTrue($r);
     }
+
+    function testAssocArrayParameter() {
+        $list = array();
+        $c = new contact();
+        $c->name = 'foo';
+        $c->address = new address();
+        $list[$c->name] = $c;
+        
+        $c = new contact();
+        $c->name = 'bar';
+        $c->address = new address();
+        $c->address->street = 'street';
+        $list[$c->name] = $c;
+
+        $r = $this->soapClient->addAssocContacts($list);
+        $this->assertTrue($r);
+    }
+    /*function testReturnOfAnAssocArray() {
+        $result = $this->soapClient->getContactsAsAssoc();
+        var_export($this->soapClient->__getLastResponse());
+        $this->assertTrue(is_array($result));
+        $this->assertEquals(2, count($result));
+        $o = $result['me'];
+        $this->assertInstanceOf('contact', $o);
+
+        $this->assertEquals('1', $o->id);
+        $this->assertEquals('me', $o->name);
+        $this->assertInstanceOf('address', $o->address);
+        $this->assertEquals('sesamstreet', $o->address->street);
+        $this->assertEquals('sesamcity', $o->address->city);
+        $this->assertEquals(null, $o->address->zipcode);
+        $o = $result['zorg'];
+        $this->assertInstanceOf('contact', $o);
+
+        $this->assertEquals('2', $o->id);
+        $this->assertEquals('zorg', $o->name);
+        $this->assertInstanceOf('address', $o->address);
+        $this->assertEquals('toysstreet', $o->address->street);
+        $this->assertEquals('toyscity', $o->address->city);
+        $this->assertEquals(null, $o->address->zipcode);
+    }
+
+    function testReturnOfAnAssocArrayInt() {
+        $result = $this->soapClient->getContactIds();
+        var_export($this->soapClient->__getLastResponse());
+        $this->assertTrue(is_array($result));
+        $this->assertEquals(2, count($result));
+
+        $this->assertEquals(1, $result['me']);
+        $this->assertEquals(2, $result['zorg']);
+    }*/
 }
 
 

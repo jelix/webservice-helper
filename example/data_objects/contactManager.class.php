@@ -38,7 +38,31 @@ class contactManager{
 	public function	getContacts() {
 		return $this->contacts;
 	}
-	
+
+	/**
+	 * Gets the current contact list.
+	 * @return contact[=>]
+	 */
+	public function	getContactsAsAssoc() {
+		$list = array();
+		foreach($this->contacts as $contact) {
+			$list[$contact->name] = $contact;
+		}
+		return $list;
+	}
+
+	/**
+	 * Gets contact id
+	 * @return int[=>]
+	 */
+	public function getContactIds() {
+		$list = array();
+		foreach($this->contacts as $contact) {
+			$list[$contact->name] = $contact->id;
+		}
+		return $list;
+	}
+
 	/**
 	  * Gets the contact with the given id.
 	  * @param int The id
@@ -61,6 +85,24 @@ class contactManager{
 	 */
 	function addContacts($contacts) {
 		$this->contacts = array_merge($this->contacts, $contacts);
+		return true;
+	}
+
+	/**
+	 * add an associative list of contact
+	 * @param contact[=>] list of contact
+	 * @return boolean
+	 */
+	function addAssocContacts($contacts) {
+		foreach($contacts as $name=>$contact) {
+			if ($name != $contact->name) {
+				return false;
+			}
+			if ( !($contact  instanceof contact)) {
+				return false;
+			}
+			$this->contacts[] = $contact;
+		}
 		return true;
 	}
 
