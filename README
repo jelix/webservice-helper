@@ -70,8 +70,8 @@ contactManager class is an allowed webservice and that contact is an allowed dat
 structure (for documentation purpose and classmap). In the config.php you add "contactmanager" to 
 the WSClasses array and add "contact" to the WSStructures array. 
 
-You can now view the service documentation at /service.php and the wsdl at 
-/service.php?class=contactManager&wsdl
+You can now view the service documentation at /doc/documentation.php and the wsdl at 
+/example/service.php?class=contactManager&wsdl
 
 3. FAQ
 -------
@@ -91,7 +91,38 @@ Yes you can use it under the terms of LGPL 2.1 and send me mail about the projec
 and with any codechanges.
 
 
-4. example
------------
+4. example and unit tests
+-------------------------
 
-See example/service.php?class=contactManager and the tests folder
+To run the example and launch unit tests, you have to setup a web server http://localhost/ws/ where
+ws/ points to the root directory (the directory where this README is). You should also to
+setup write access to your web server on the example/wsdl directory.
+
+For example, on debian/ubuntu, with Apache:
+
+```
+sudo ln -s /var/www/html/ws `pwd`
+sudo chown :www-data example/wsdl
+chmod g+w example/wsdl
+```
+
+You can then load in your browser:
+
+```
+http://localhost/ws/example/service.php?class=contactManager
+```
+
+To run tests, go into the tests directory, and launch phpunit
+
+```
+cd tests
+../vendor/bin/phpunit
+```
+
+If you made a change in the code and want to relaunch tests (which is a good idea ;-)),
+you must be sure that WSDL cache is clear.
+
+```
+sudo rm -rf /tmp/wsdl-*
+sudo rm -f ../example/wsdl/contactManager.wsdl
+```

@@ -1,24 +1,78 @@
 <?php
-$wsdl = "http://".$_SERVER['HTTP_HOST']."/ws/example/service.php?class=contactManager&wsdl";
-echo "<strong>WSDL file:</strong> ".$wsdl."<br>\n";
 
-$options = Array('actor' =>'http://schema.jool.nl',
-				 'trace' => true);
-$client = new SoapClient($wsdl,$options);
-echo "<hr> <strong>Result from getContacts call:</strong><br>";
+ini_set("soap.wsdl_cache_enabled", "0");
 
-$res = $client->getContacts();
-print_r($res);
-echo "<hr><strong>Raw Soap response:</strong><br>";
-echo htmlentities($client->__getLastResponse());
-echo "<hr><strong>SoapFault asking for an unknown contact:</strong><br>";
-$client->getContact(1);
+class webserviceTests  extends PHPUnit_Framework_TestCase {
 
+    protected $soapClient;
 
+    function setUp() {
+        $wsdl = "http://localhost/ws/example/service.php?class=contactManager&wsdl";
+        $options = array('actor' =>'http://schema.jool.nl',
+                         'trace' => true,
+                         'classmap'=>array(
+                                           'address'=>'address',
+                                           'contact'=>'contact'
+                        ));
+        $this->soapClient = new SoapClient($wsdl, $options);
+    }
 
-class reflectionMethodTests  extends PHPUnit_Framework_TestCase {
+    function tearDown() {
+        $this->soapClient = null;
+    }
 
+    function testReturnOfAnArray() {
+        $result = $this->soapClient->getContacts();
+        $this->assertTrue(is_array($result));
+        $this->assertEquals(2, count($result));
+        $o = $result[0];
+        $this->assertInstanceOf('contact', $o);
 
+        $this->assertEquals('1', $o->id);
+        $this->assertEquals('me', $o->name);
+        $this->assertInstanceOf('address', $o->address);
+        $this->assertEquals('sesamstreet', $o->address->street);
+        $this->assertEquals('sesamcity', $o->address->city);
+        $this->assertEquals(null, $o->address->zipcode);
+        $o = $result[1];
+        $this->assertInstanceOf('contact', $o);
+
+        $this->assertEquals('2', $o->id);
+        $this->assertEquals('zorg', $o->name);
+        $this->assertInstanceOf('address', $o->address);
+        $this->assertEquals('toysstreet', $o->address->street);
+        $this->assertEquals('toyscity', $o->address->city);
+        $this->assertEquals(null, $o->address->zipcode);
+    }
+
+    function testReturnAnObject() {
+        $o = $this->soapClient->getContact(2);
+        $this->assertInstanceOf('contact', $o);
+
+        $this->assertEquals('2', $o->id);
+        $this->assertEquals('zorg', $o->name);
+        $this->assertInstanceOf('address', $o->address);
+        $this->assertEquals('toysstreet', $o->address->street);
+        $this->assertEquals('toyscity', $o->address->city);
+        $this->assertEquals(null, $o->address->zipcode);
+    }
+
+    function testArrayParameter() {
+        $list = array();
+        $c = new contact();
+        $c->name = 'foo';
+        $c->address = new address();
+        $list[] = $c;
+        
+        $c = new contact();
+        $c->name = 'bar';
+        $c->address = new address();
+        $c->address->street = 'street';
+        $list[] = $c;
+
+        $r = $this->soapClient->addContacts($list);
+        $this->assertTrue($r);
+    }
 }
 
 

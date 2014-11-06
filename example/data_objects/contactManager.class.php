@@ -10,22 +10,33 @@
   */
 class contactManager{
 
-	/**
-	 * Gets the current contact list.
-	 * @return contact[]
-	 */
-	public function	getContacts() {
+	protected $contacts = array();
+
+	public function __construct() {
 		$contact = new contact();
-		$contact->address = new Address();
+		$contact->address = new address();
 		$contact->address->city ="sesamcity";
 		$contact->address->street ="sesamstreet";
 		$contact->email = "me@you.com";
 		$contact->id = 1;
 		$contact->name ="me";
-		
-		$ret[] = $contact;
-		//debugObject("contacten: ",$ret);
-		return $ret;
+		$this->contacts[] = $contact;
+		$contact = new contact();
+		$contact->address = new address();
+		$contact->address->city ="toyscity";
+		$contact->address->street ="toysstreet";
+		$contact->email = "zorg@example.com";
+		$contact->id = 2;
+		$contact->name ="zorg";
+		$this->contacts[] = $contact;
+	}
+
+	/**
+	 * Gets the current contact list.
+	 * @return contact[]
+	 */
+	public function	getContacts() {
+		return $this->contacts;
 	}
 	
 	/**
@@ -35,9 +46,24 @@ class contactManager{
 	  */
 	public function	getContact($id) {
 		//get contact from db
+		foreach($this->contacts as $contact) {
+			if ($contact->id == $id)
+				return $contact;
+		}
 		//might wanna throw an exception when it does not exists
 		throw new Exception("Contact '$id' not found");
 	}
+
+	/**
+	 * add a list of contact
+	 * @param contact[] list of contact
+	 * @return boolean
+	 */
+	function addContacts($contacts) {
+		$this->contacts = array_merge($this->contacts, $contacts);
+		return true;
+	}
+
 	/**
 	  * Generates an new, empty contact template
 	  * @return contact
@@ -53,7 +79,13 @@ class contactManager{
 	  */
 	public function saveContact(contact $contact) {
 		$contact->save();
+		foreach($this->contacts as $k=>$contactdb) {
+			if ($contactdb->id == $contact->id) {
+				$this->contacts[$k] = $contact;
+				return;
+			}
+		}
+		$this->contacts[] = $contact;
 	}
-
 }
-?>
+

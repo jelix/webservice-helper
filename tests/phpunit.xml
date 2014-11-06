@@ -9,5 +9,8 @@
     <testsuite name="Extended annotations">
       <file>annotations.php</file>
     </testsuite>
+    <testsuite name="Web service">
+      <file>webservice.php</file>
+    </testsuite>
   </testsuites>
 </phpunit>
