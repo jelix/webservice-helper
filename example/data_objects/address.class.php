@@ -8,7 +8,7 @@
   * show how to create a webservice
   *
   */
-class Address{
+class address{
 	/** @var string */
 	public $street;
 	
@@ -21,4 +21,3 @@ class Address{
 	/** @var string */
 	public $city;	
 }
-?>
