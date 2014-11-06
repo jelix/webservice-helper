@@ -14,24 +14,47 @@ class IPXMLSchema {
 		$this->parentElement = $parentElement;
 	}
 
+	/**
+	 * @param string $type the type of the parameter
+	 * @param string $name the name of the parameter
+	 * @param DOMElement $xmlElement the element on which to declare the type
+	 */
 	public function addType($type, $name, $xmlelement) {
 		$xmlelement->setAttribute("name", $name);
+		list($typeName, $xsdtype) = $this->_addType($type);
+		$xmlelement->setAttribute("type", $xsdtype);
+	}
+
+	/**
+	 * @return string the type
+	 */
+	protected function _addType($type) {
 		//check if it is a valid XML Schema datatype
 		if ($t = self::checkSchemaType(strtolower($type))) {
-			$xmlelement->setAttribute("type", "xsd:".$t);
+			return array($t, "xsd:".$t);
 		}
 		//no XML Schema datatype
 		//if valueType==Array, then create anonymouse inline complexType (within element
 		// tag without type attribute)
 		else if (substr($type,-2) == "[]") {
-			//If it is an array, change the type name
-			$name = substr($type,0,-2)."Array";
-			$xmlelement->setAttribute("type", "tns:".$name);
-			$this->addComplexType($type, $name);
+			$type = substr($type,0,-2);
+			list($subtypeName, $subtype) = $this->_addType($type);
+			$this->addArray("ArrayOf".$subtypeName, $subtype);
+			return array("ArrayOf".$subtypeName, 'tns:ArrayOf'.$subtypeName);
+		}
+		else if (strtolower($type) == 'array' || strtolower($type) == 'array()') {
+			$this->addArray("ArrayOfanyType", 'xsd:anyType'); return
+			array("ArrayOfanyType", 'tns:ArrayOfanyType');
+		}
+		else if (strtolower(substr($type,0,6)) == 'array(') {
+			$type = substr($type, 6, -1);
+			list($subtypeName, $subtype) = $this->_addType($type);
+			$this->addArray("ArrayOf".$subtypeName, $subtype);
+			return array("ArrayOf".$subtypeName, 'tns:ArrayOf'.$subtypeName);
 		}
 		else {
-			$xmlelement->setAttribute("type", "tns:".$type);
 			$this->addComplexType($type, $type);
+			return array($type, "tns:".$type);
 		}
 	}
 
@@ -42,7 +65,7 @@ class IPXMLSchema {
 	 * @param domNode Used when adding an inline complexType
 	 * @return domNode The complexType node
 	 */
-	public function addComplexType($type, $name = false, $parent = false) {
+	protected function addComplexType($type, $name = false, $parent = false) {
 		if(!$parent){//outline element
 			//check if the complexType doesn't already exists
 			if(isset($this->types[$name])) {
@@ -58,37 +81,30 @@ class IPXMLSchema {
 			$complexTypeTag = $this->addElement("xsd:complexType", $parent);
 		}
 
-		//check if its an array
-		if(strtolower($type) == 'array' || strtolower(substr($type,0,6)) == 'array(' || substr($type,-2) == '[]'){
-			$this->addArray($type,$complexTypeTag);
-		}
-		else {//it should be an object
-			$tag=$this->addElement("xsd:all", $complexTypeTag);
-			//check if it has the name 'object()' (kind of a stdClass)
-			if(strtolower(substr($type,0,6)) == 'object'){//stdClass
-				$content = substr($type, 7, -1);
-				$properties = explode(",", $content);//split the content into properties
-				foreach ($properties as $property) {
-					if (strpos($property, "=>") !== false){//array with keys (order is important, so use 'sequence' tag)
-						list($keyType, $valueType) = explode('=>', $property);
-						$el = $this->addTypeElement($valueType, $keyType, $tag);
-					}
-					else {
-						throw new WSDLException("Error creating WSDL: expected \"=>\". When using the object() as type, use it as object(paramname=>paramtype,paramname2=>paramtype2)", 100);
-					}
+		$tag=$this->addElement("xsd:all", $complexTypeTag);
+		//check if it has the name 'object()' (kind of a stdClass)
+		if(strtolower(substr($type,0,6)) == 'object'){//stdClass
+			$content = substr($type, 7, -1);
+			$properties = explode(",", $content);//split the content into properties
+			foreach ($properties as $property) {
+				if (strpos($property, "=>") !== false){//array with keys (order is important, so use 'sequence' tag)
+					list($keyType, $valueType) = explode('=>', $property);
+					$el = $this->addTypeElement($valueType, $keyType, $tag);
 				}
-			}else{ //should be a known class
-
-				if(!class_exists($name)) {
-					throw new WSDLException("Error creating WSDL: no class found with the name '$name' / $type : $parent, so how should we know the structure for this datatype?", 101);
+				else {
+					throw new WSDLException("Error creating WSDL: expected \"=>\". When using the object() as type, use it as object(paramname=>paramtype,paramname2=>paramtype2)", 100);
 				}
-				$v = new IPReflectionClass($name);
-				$properties = $v->getProperties(false, false, false);//not protected and private properties
+			}
+		}else{ //should be a known class
+			if (!class_exists($name)) {
+				throw new WSDLException("Error creating WSDL: no class found with the name '$name' / $type : $parent, so how should we know the structure for this datatype?", 101);
+			}
+			$v = new IPReflectionClass($name);
+			$properties = $v->getProperties(false, false, false);//not protected and private properties
 
-				foreach((array) $properties as $property){
-					if(!$property->isPrivate){
-						$el = $this->addTypeElement($property->type, $property->name, $tag, $property->optional);
-					}
+			foreach((array) $properties as $property){
+				if(!$property->isPrivate){
+					$el = $this->addTypeElement($property->type, $property->name, $tag, $property->optional);
 				}
 			}
 		}
@@ -104,7 +120,7 @@ class IPXMLSchema {
 	 * @param boolean If the property is optional
 	 * @return domNode
 	 */
-	public function addTypeElement($type, $name, $parent, $optional = false) {
+	protected function addTypeElement($type, $name, $parent, $optional = false) {
 		$el = $this->addElement("xsd:element", $parent);
 		if($optional){//if it's an optional property, set minOccur to 0
 			$el->setAttribute("minOccurs", "0");
@@ -117,53 +133,41 @@ class IPXMLSchema {
 	/**
 	 * Creates an xmlSchema element for the given array
 	 */
-	public function addArray($type, $parent) {
-		$cc = $this->addElement("xsd:complexContent", $parent);
+	protected function addArray($name, $xsdType) {
+
+		if(isset($this->types[$name])) {
+			return $this->types[$name];
+		}
+		//create the complexType tag beneath the xsd:schema tag
+		$complexTypeTag = $this->addElement("xsd:complexType", $this->parentElement);
+		$complexTypeTag->setAttribute("name",$name);
+		$this->types[$name] = $complexTypeTag;
+
+		$cc = $this->addElement("xsd:complexContent", $complexTypeTag);
+
 		$rs = $this->addElement("xsd:restriction", $cc);
 		$rs->setAttribute("base", "SOAP-ENC:Array");
 
 		$el = $this->addElement("xsd:attribute", $rs);
 		$el->setAttribute("ref", "SOAP-ENC:arrayType");
-
-		if (strtolower($type) == 'array' || strtolower($type) == 'array()') {
-			$el->setAttribute("wsdl:arrayType", "xsd:anyType[]");
-			return $el;
-		}
-
-		$shortNotation = (substr($type,-2) == '[]');
-		$type =  $shortNotation ? substr($type, 0, -2) : substr($type, 6, -1);
-
-		//check if XML Schema datatype
-		if($t = self::checkSchemaType(strtolower($type))) {
-				$el->setAttribute("wsdl:arrayType", "xsd:".$t."[]");
-		}
-		else{//no XML Schema datatype
-			//if valueType==Array, then create anonymouse inline complexType (within element tag without type attribute)
-			if (substr($type,-2) == '[]'){
-				$this->addComplexType($type, false, $el);
-			}else{//else, new complextype, outline (element with 'ref' attrib)
-				$el->setAttribute("wsdl:arrayType", "tns:".$type."[]");
-				$this->addComplexType($type, $type);
-			}
-		}
-		return $el;
+		$el->setAttribute("wsdl:arrayType", $xsdType.'[]');
 	}
 
+	protected static $_schemaTypes = array(
+			"string" => "string",
+			"int" => "int",
+			"integer" => "int",
+			"boolean" => "boolean",
+			"float" => "float",
+			"mixed" => "anyType");
 	/**
 	 * Checks if the given type is a valid XML Schema type or can be casted to a schema type
 	 * @param string The datatype
 	 * @return string
 	 */
 	public static function checkSchemaType($type) {
-		//XML Schema types
-		$types = Array("string" => "string",
-			  "int" => "int",
-			  "integer" => "int",
-			  "boolean" => "boolean",
-			  "float" => "float",
-			  "mixed" => "anyType");
-		if(isset($types[$type])) {
-			return $types[$type];
+		if(isset(self::$_schemaTypes[$type])) {
+			return self::$_schemaTypes[$type];
 		}
 		else {
 			return false;
