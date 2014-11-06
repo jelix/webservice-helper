@@ -8,7 +8,8 @@ if(isset($_GET['class']) && (in_array($_GET['class'], $WSClasses) || in_array($_
 	$WSHelper->classNameArr = $WSClasses;
 	$WSHelper->structureMap = $WSStructures;
 	$WSHelper->setPersistence(SOAP_PERSISTENCE_REQUEST);
-	$WSHelper->setWSDLCacheFolder('wsdl/'); //trailing slash mandatory. Default is 'wsdl/'
+	$WSHelper->setWSDLCacheFolder(__DIR__.'/wsdl/'); //trailing slash mandatory. Default is 'wsdl/'
+	$WSHelper->docTemplate =  __DIR__."/../doc/templates/docclass.xsl";
 	try {
 		$WSHelper->handle();
 		//possible db transaction commit

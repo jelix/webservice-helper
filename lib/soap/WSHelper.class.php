@@ -24,7 +24,8 @@ class WSHelper {
 	
 	public $type = SOAP_RPC;
 	public $use = SOAP_LITERAL;
-	
+
+	public $docTemplate = '';
 	/** 
 	 * Constructor
 	 * @param string The Uri name
@@ -33,6 +34,7 @@ class WSHelper {
 	public function __construct($uri, $class=null){
 		$this->uri = $uri;
 		$this->setWSDLCacheFolder($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF'])."/wsdl/");
+
 		if($class) $this->setClass($class);
 	}
 
@@ -148,9 +150,17 @@ class WSHelper {
 	 * @param string Template filename
 	 * @return void
 	 */
-	public function createDocumentation($template="templates/docclass.xsl")	{
-		if(!is_file($template))
+	public function createDocumentation($template="") {
+
+		if ($template == '') {
+			$template = $this->docTemplate;
+		}
+		if($template == '') {
+			throw new WSException("No template file to generate documentation");
+		}
+		if(!is_file($template)) {
 			throw new WSException("Could not find the template file: '$template'");
+		}
 		$this->class = new IPReflectionClass($this->name);
 		$xtpl = new IPXSLTemplate($template);
 		$documentation = Array();
