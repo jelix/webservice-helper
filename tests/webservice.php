@@ -13,4 +13,12 @@ echo "<hr><strong>Raw Soap response:</strong><br>";
 echo htmlentities($client->__getLastResponse());
 echo "<hr><strong>SoapFault asking for an unknown contact:</strong><br>";
 $client->getContact(1);
-?>
+
+
+
+class reflectionMethodTests  extends PHPUnit_Framework_TestCase {
+
+
+}
+
+
