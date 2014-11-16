@@ -89,6 +89,8 @@ class WSDLStruct {
 		$this->typesTag = $this->addElement("wsdl:types", $this->definitions);
 		$this->xsdSchema = $this->addElement("xsd:schema", $this->typesTag);
 		$this->xsdSchema->setAttribute("targetNamespace", $this->tns);
+		$imp = $this->addElement("xsd:import", $this->xsdSchema);
+		$imp->setAttribute('namespace', "http://xml.apache.org/xml-soap");
 		$this->xmlSchema = new IPXMLSchema($this->xsdSchema);
 
 	}
@@ -117,6 +119,7 @@ class WSDLStruct {
 		$definitions->setAttribute("xmlns:SOAP-ENC", 	self::NS_ENC);
 		$definitions->setAttribute("xmlns:wsdl", 		self::NS_WSDL);
 		$definitions->setAttribute("xmlns:xsd", 		self::NS_XSD);
+		$definitions->setAttribute("xmlns:apache", 	"http://xml.apache.org/xml-soap");
 		$definitions->setAttribute("xmlns:tns", 		$this->tns);
 		$definitions->setAttribute("targetNamespace", 	$this->tns);
 

@@ -1,13 +1,12 @@
 Changelog 1.5.2 (Laurent Jouanneau)
 - Add support of "object" type (recognized as stdClass type)
 - Add Support of @externalparam
-- Add support of associative arrays for parameters
-- in the schema, names of complex type for arrays follow the standard
+- Add support of associative arrays
+- in the schema, names of complex type for arrays follow the standard: "ArrayOf..."
 - WSHelper: the default document xsl template can be set
 - Fix support of object(..) type notation
 - Fix: WSException was not well initialized (there was no message)
 - More unit tests
-
 
 Changelog 1.5.1 (Laurent Jouanneau)
 - Improvements in @param in the doccomment parser and IPReflectionMethod::getParameters()

@@ -8,12 +8,15 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
 
     function setUp() {
         $wsdl = "http://localhost/ws/example/service.php?class=contactManager&wsdl";
-        $options = array('actor' =>'http://schema.jool.nl',
+        $options = array('actor' =>'http://schema.example.com',
                          'trace' => true,
+                         'soap_version' => SOAP_1_1,
                          'classmap'=>array(
-                                           'address'=>'address',
-                                           'contact'=>'contact'
-                        ));
+                            'address'=>'address',
+                            'contact'=>'contact'
+                        ),
+                         'exceptions'=>1,
+                         );
         $this->soapClient = new SoapClient($wsdl, $options);
     }
 
@@ -90,12 +93,15 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
         $r = $this->soapClient->addAssocContacts($list);
         $this->assertTrue($r);
     }
-    /*function testReturnOfAnAssocArray() {
+
+    function testReturnOfAnAssocArray() {
         $result = $this->soapClient->getContactsAsAssoc();
-        var_export($this->soapClient->__getLastResponse());
+
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
         $o = $result['me'];
+        $this->assertInstanceOf('SoapVar', $o);
+        $o = $o->enc_value;
         $this->assertInstanceOf('contact', $o);
 
         $this->assertEquals('1', $o->id);
@@ -104,7 +110,10 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
         $this->assertEquals('sesamstreet', $o->address->street);
         $this->assertEquals('sesamcity', $o->address->city);
         $this->assertEquals(null, $o->address->zipcode);
+
         $o = $result['zorg'];
+        $this->assertInstanceOf('SoapVar', $o);
+        $o = $o->enc_value;
         $this->assertInstanceOf('contact', $o);
 
         $this->assertEquals('2', $o->id);
@@ -117,13 +126,12 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
 
     function testReturnOfAnAssocArrayInt() {
         $result = $this->soapClient->getContactIds();
-        var_export($this->soapClient->__getLastResponse());
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
 
         $this->assertEquals(1, $result['me']);
         $this->assertEquals(2, $result['zorg']);
-    }*/
+    }
 }
 
 

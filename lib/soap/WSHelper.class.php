@@ -121,7 +121,9 @@ class WSHelper {
 		if(!file_exists($this->wsdlfile))
 			$this->createWSDL();
 
-		$options = Array('actor' => $this->actor, 'classmap' => $this->structureMap);
+		$options = array('soap_version' => SOAP_1_1,
+						 'actor' => $this->actor,
+						 'classmap' => $this->structureMap);
 
 		header("Content-type: text/xml");
 		$this->server = new SoapServer($this->wsdlfile, $options);
@@ -170,7 +172,7 @@ class WSHelper {
 		foreach($this->classNameArr as $className) {
 			$documentation['menu'][] = new IPReflectionClass($className);
 		}
-		
+
 		if($this->class){
 			$this->class->properties = $this->class->getProperties(false, false);
 			$this->class->methods = $this->class->getMethods(false, false);

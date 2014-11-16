@@ -84,6 +84,13 @@ class contactManager{
 	 * @return boolean
 	 */
 	function addContacts($contacts) {
+		if (!is_array($contacts))
+			return false;
+		foreach($contacts as $contact) {
+			if ( !($contact  instanceof contact)) {
+				return false;
+			}
+		}
 		$this->contacts = array_merge($this->contacts, $contacts);
 		return true;
 	}
@@ -94,11 +101,16 @@ class contactManager{
 	 * @return boolean
 	 */
 	function addAssocContacts($contacts) {
+		if (!is_array($contacts))
+			return false;
 		foreach($contacts as $name=>$contact) {
-			if ($name != $contact->name) {
-				return false;
+			if (is_object($contact) && $contact  instanceof SoapVar) {
+				$contact = $contact->enc_value;
 			}
 			if ( !($contact  instanceof contact)) {
+				return false;
+			}
+			if ($name != $contact->name) {
 				return false;
 			}
 			$this->contacts[] = $contact;
@@ -113,7 +125,7 @@ class contactManager{
 	public function newContact() {
 		return new contact();
 	}
-	
+
 	/**
 	  * Saves a given contact
 	  * @param contact

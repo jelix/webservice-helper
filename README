@@ -52,6 +52,13 @@ specifying the parameters and return types. For example:
  */
  public function newContact(){}
 
+/**
+ * Gets the current contact list as associative array
+ * @return contact[=>]  keys are contact name
+ */
+public function	getContactsAsAssoc() {
+
+
 We used the contact type as a return value for newContact() and getContacts() so we 
 need to define what a contact looks like. For that we create a class called contact:
 
@@ -67,11 +74,16 @@ any further.
 
 The last thing we need to do to finish our webservice is to tell the webservice that de 
 contactManager class is an allowed webservice and that contact is an allowed data-
-structure (for documentation purpose and classmap). In the config.php you add "contactmanager" to 
-the WSClasses array and add "contact" to the WSStructures array. 
+structure (for documentation purpose and classmap). In the config.php you add
+"contactmanager" to the WSClasses array and add "contact" to the WSStructures array. 
 
 You can now view the service documentation at /doc/documentation.php and the wsdl at 
 /example/service.php?class=contactManager&wsdl
+
+Note about associative array containing objects: if the soap server defines a classmap
+('classmap' option to SoapServer in PHP), objects are wrapped into SoapVal objects, else
+they are simple stdClass objects.
+
 
 3. FAQ
 -------
@@ -94,9 +106,9 @@ and with any codechanges.
 4. example and unit tests
 -------------------------
 
-To run the example and launch unit tests, you have to setup a web server http://localhost/ws/ where
-ws/ points to the root directory (the directory where this README is). You should also to
-setup write access to your web server on the example/wsdl directory.
+To run the example and launch unit tests, you have to setup a web server http://localhost/ws/
+where ws/ points to the root directory (the directory where this README is). You should
+also to setup write access to your web server on the example/wsdl directory.
 
 For example, on debian/ubuntu, with Apache:
 

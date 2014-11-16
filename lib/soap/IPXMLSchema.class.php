@@ -55,8 +55,7 @@ class IPXMLSchema {
 		else if (substr($type,-4) == "[=>]") {
 			$type = substr($type,0,-4);
 			list($subtypeName, $subtype) = $this->_addType($type);
-			$this->addAssocArray("AssociativeArrayOf".$subtypeName, $subtype);
-			return array("AssociativeArrayOf".$subtypeName, 'tns:AssociativeArrayOf'.$subtypeName);
+			return array("AssociativeArrayOf".$subtypeName, 'apache:Map');
 		}
 		else {
 			$this->addComplexType($type, $type);
@@ -157,36 +156,6 @@ class IPXMLSchema {
 		$el = $this->addElement("xsd:attribute", $rs);
 		$el->setAttribute("ref", "SOAP-ENC:arrayType");
 		$el->setAttribute("wsdl:arrayType", $xsdType.'[]');
-	}
-
-	protected function addAssocArray($name, $xsdType) {
-
-		if(isset($this->types[$name])) {
-			return $this->types[$name];
-		}
-		$itemName = $name."_item";
-		//create the complexType tag beneath the xsd:schema tag
-		$complexTypeTag = $this->addElement("xsd:complexType", $this->parentElement);
-		$complexTypeTag->setAttribute("name",$name);
-		$this->types[$name] = $complexTypeTag;
-
-		$seq = $this->addElement("xsd:sequence", $complexTypeTag);
-		$elem = $this->addElement("xsd:element", $seq);
-		$elem->setAttribute('name', "item");
-		$elem->setAttribute('minOccurs', "0");
-		$elem->setAttribute('maxOccurs', "unbounded");
-		$elem->setAttribute("type", 'tns:'.$itemName);
-
-		$complexTypeItem = $this->addElement("xsd:complexType", $this->parentElement);
-		$complexTypeItem->setAttribute("name", $itemName);
-		$this->types[$itemName] = $complexTypeItem;
-		$seq = $this->addElement("xsd:sequence", $complexTypeItem);
-		$key = $this->addElement("xsd:element", $seq);
-		$key->setAttribute('name', "key");
-		$key->setAttribute("type", 'xsd:anyType');
-		$val = $this->addElement("xsd:element", $seq);
-		$val->setAttribute('name', "value");
-		$val->setAttribute("type", $xsdType);
 	}
 
 	protected static $_schemaTypes = array(
