@@ -79,7 +79,14 @@ class IPXMLSchema {
 			//create the complexType tag beneath the xsd:schema tag
 			$complexTypeTag=$this->addElement("xsd:complexType", $this->parentElement);
 			if($name){//might be an anonymous element
-				$complexTypeTag->setAttribute("name",$name);
+				if (class_exists($name)) {
+					$reflection = new IPReflectionClass($name);
+
+					$complexTypeTag->setAttribute("name", $reflection->getShortName());
+				} else {
+					$complexTypeTag->setAttribute("name", $name);
+				}
+				// $complexTypeTag->setAttribute("name",$name);
 				$this->types[$name]=$complexTypeTag;
 			}
 		}else{//inline element
