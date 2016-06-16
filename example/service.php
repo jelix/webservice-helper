@@ -20,4 +20,3 @@ if(isset($_GET['class']) && (in_array($_GET['class'], $WSClasses) || in_array($_
 } else {
 	die("No valid class selected");
 }
-?>

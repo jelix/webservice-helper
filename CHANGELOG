@@ -1,3 +1,7 @@
+Changelog 1.5.3 (Laurent Jouanneau)
+
+- Fix support for PHP 5.6 and PHP7+: the service doesn't rely on HTTP_RAW_POST_DATA anymore
+
 Changelog 1.5.2 (Laurent Jouanneau)
 - Add support of "object" type (recognized as stdClass type)
 - Add Support of @externalparam

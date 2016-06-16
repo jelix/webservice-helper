@@ -70,12 +70,34 @@ class WSHelper {
 	public function handle(){
 		if(substr($_SERVER['QUERY_STRING'], -4) == 'wsdl'){
 			$this->showWSDL();
-		}elseif(isset($GLOBALS['HTTP_RAW_POST_DATA']) && strlen($GLOBALS['HTTP_RAW_POST_DATA'])>0){
+			return;
+		}
+		if($this->isSoapRequest()){
 			$this->handleRequest();
-		}else{
+		} else {
 			$this->createDocumentation();
 		}
 	}
+
+    private function  isSoapRequest() {
+		$contentType = '';
+		if(isset($_SERVER['CONTENT_TYPE'])){
+			$contentType = $_SERVER['CONTENT_TYPE'];
+		} else if(isset($_SERVER['HTTP_CONTENT_TYPE'])){
+			$contentType = $_SERVER['HTTP_CONTENT_TYPE'];
+		}
+
+		if (strpos($contentType, 'text/xml') === 0 ||
+			strpos($contentType, 'application/soap+xml') === 0) {
+			return true;
+		}
+
+		if (isset($_SERVER['HTTP_SOAPACTION'])) {
+			return true;
+		}
+		return false;
+    }
+
 	/**
 	 * Checks if the current WSDL is up-to-date, regenerates if necessary and outputs the WSDL
 	 * @return void
