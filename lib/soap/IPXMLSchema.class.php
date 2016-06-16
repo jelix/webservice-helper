@@ -181,6 +181,7 @@ class IPXMLSchema
             'string' => 'string',
             'int' => 'int',
             'integer' => 'int',
+            'bool' => 'boolean',
             'boolean' => 'boolean',
             'float' => 'float',
             'mixed' => 'anyType', );

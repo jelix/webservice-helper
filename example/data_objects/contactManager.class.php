@@ -96,7 +96,7 @@ class contactManager
      *
      * @param contact[] list of contact
      *
-     * @return boolean
+     * @return bool
      */
     public function addContacts($contacts)
     {
@@ -118,7 +118,7 @@ class contactManager
      *
      * @param contact[=>] list of contact
      *
-     * @return boolean
+     * @return bool
      */
     public function addAssocContacts($contacts)
     {
