@@ -1,30 +1,33 @@
 <?php
 
-ini_set("soap.wsdl_cache_enabled", "0");
+ini_set('soap.wsdl_cache_enabled', '0');
 
-class webserviceTests  extends PHPUnit_Framework_TestCase {
-
+class webserviceTests  extends PHPUnit_Framework_TestCase
+{
     protected $soapClient;
 
-    function setUp() {
-        $wsdl = "http://localhost/ws/example/service.php?class=contactManager&wsdl";
-        $options = array('actor' =>'http://schema.example.com',
+    public function setUp()
+    {
+        $wsdl = 'http://localhost/ws/example/service.php?class=contactManager&wsdl';
+        $options = array('actor' => 'http://schema.example.com',
                          'trace' => true,
                          'soap_version' => SOAP_1_1,
-                         'classmap'=>array(
-                            'address'=>'address',
-                            'contact'=>'contact'
+                         'classmap' => array(
+                            'address' => 'address',
+                            'contact' => 'contact',
                         ),
-                         'exceptions'=>1,
+                         'exceptions' => 1,
                          );
         $this->soapClient = new SoapClient($wsdl, $options);
     }
 
-    function tearDown() {
+    public function tearDown()
+    {
         $this->soapClient = null;
     }
 
-    function testReturnOfAnArray() {
+    public function testReturnOfAnArray()
+    {
         $result = $this->soapClient->getContacts();
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
@@ -48,7 +51,8 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
         $this->assertEquals(null, $o->address->zipcode);
     }
 
-    function testReturnAnObject() {
+    public function testReturnAnObject()
+    {
         $o = $this->soapClient->getContact(2);
         $this->assertInstanceOf('contact', $o);
 
@@ -60,13 +64,14 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
         $this->assertEquals(null, $o->address->zipcode);
     }
 
-    function testArrayParameter() {
+    public function testArrayParameter()
+    {
         $list = array();
         $c = new contact();
         $c->name = 'foo';
         $c->address = new address();
         $list[] = $c;
-        
+
         $c = new contact();
         $c->name = 'bar';
         $c->address = new address();
@@ -77,13 +82,14 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
         $this->assertTrue($r);
     }
 
-    function testAssocArrayParameter() {
+    public function testAssocArrayParameter()
+    {
         $list = array();
         $c = new contact();
         $c->name = 'foo';
         $c->address = new address();
         $list[$c->name] = $c;
-        
+
         $c = new contact();
         $c->name = 'bar';
         $c->address = new address();
@@ -94,7 +100,8 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
         $this->assertTrue($r);
     }
 
-    function testReturnOfAnAssocArray() {
+    public function testReturnOfAnAssocArray()
+    {
         $result = $this->soapClient->getContactsAsAssoc();
 
         $this->assertTrue(is_array($result));
@@ -124,7 +131,8 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
         $this->assertEquals(null, $o->address->zipcode);
     }
 
-    function testReturnOfAnAssocArrayInt() {
+    public function testReturnOfAnAssocArrayInt()
+    {
         $result = $this->soapClient->getContactIds();
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
@@ -133,5 +141,3 @@ class webserviceTests  extends PHPUnit_Framework_TestCase {
         $this->assertEquals(2, $result['zorg']);
     }
 }
-
-
