@@ -20,17 +20,12 @@ function __autoload($classname) {
 }
 
 /** Schrijft de gegeven tekst naar de debug file */
-function debug($txt,$file="debug.txt"){
-	$fp = fopen($file, "a");
-	fwrite($fp, str_replace("\n","\r\n","\r\n".$txt));
-	fclose($fp);
+function debug($txt,$file="debug.log"){
+    error_log($txt."\n",3,$file);
 }
 
 /** Schrijft het gegeven object weg in de debug log */
 function debugObject($txt,$obj){
-	ob_start();
-	print_r($obj);
-	$data = ob_get_contents();
-	ob_end_clean();
-	debug($txt."\n".$data);
+	debug($txt."\n".var_export($obj, true)."\n");
 }
+
