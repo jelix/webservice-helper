@@ -2,13 +2,13 @@
 
 ini_set('soap.wsdl_cache_enabled', '0');
 
-class webserviceTests  extends PHPUnit_Framework_TestCase
+class webserviceTests  extends \PHPUnit\Framework\TestCase
 {
     protected $soapClient;
 
-    public function setUp()
+    protected function setUp() : void
     {
-        $wsdl = 'http://localhost/ws/example/service.php?class=contactManager&wsdl';
+        $wsdl = 'http://soaptest.local/service.php?class=contactManager&wsdl';
         $options = array('actor' => 'http://schema.example.com',
                          'trace' => true,
                          'soap_version' => SOAP_1_1,
@@ -21,7 +21,7 @@ class webserviceTests  extends PHPUnit_Framework_TestCase
         $this->soapClient = new SoapClient($wsdl, $options);
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         $this->soapClient = null;
     }

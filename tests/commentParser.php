@@ -9,7 +9,7 @@ class testCommentClass
     public $throws = '';
 }
 
-class commentParserTests  extends PHPUnit_Framework_TestCase
+class commentParserTests  extends \PHPUnit\Framework\TestCase
 {
     public function testEmptyDescription()
     {

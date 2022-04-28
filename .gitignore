@@ -6,3 +6,5 @@ vendor/
 composer.lock
 /example/wsdl/*.wsdl
 .idea
+.phpunit.result.cache
+debugclient.log

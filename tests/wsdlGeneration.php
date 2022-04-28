@@ -162,7 +162,7 @@ class testWsdlWithAssocArray
     }
 }
 
-class wsdlGenerationTests  extends PHPUnit_Framework_TestCase
+class wsdlGenerationTests  extends \PHPUnit\Framework\TestCase
 {
     public function testSimpleClass()
     {

@@ -29,14 +29,14 @@ class extendedAnnotationTestClass
     }
 }
 
-class extendedAnnotationTest extends PHPUnit_Framework_TestCase
+class extendedAnnotationTest extends \PHPUnit\Framework\TestCase
 {
     public function testClassAnnotations()
     {
         $rel = new IPReflectionClass('extendedAnnotationTestClass');
         $ann = $rel->getAnnotation('ann1', 'stdClass');
 
-        $this->assertInternalType('object', $ann);
+        $this->assertIsObject($ann);
         $this->assertInstanceOf('stdClass', $ann);
         $this->assertEquals('you', $ann->me);
     }
@@ -49,7 +49,7 @@ class extendedAnnotationTest extends PHPUnit_Framework_TestCase
 
         $ann = $property->getAnnotation('Controller', 'testExtendedAnnotationContainer');
 
-        $this->assertInternalType('object', $ann);
+        $this->assertIsObject($ann);
         $this->assertInstanceOf('testExtendedAnnotationContainer', $ann);
         $this->assertEquals(testExtendedAnnotationContainer::TYPE_PLAIN, $ann->type);
         $this->assertEquals(100, $ann->length);
@@ -63,7 +63,7 @@ class extendedAnnotationTest extends PHPUnit_Framework_TestCase
 
         $ann = $method->getAnnotation('Controller', 'testExtendedAnnotationContainer');
 
-        $this->assertInternalType('object', $ann);
+        $this->assertIsObject($ann);
         $this->assertInstanceOf('testExtendedAnnotationContainer', $ann);
         $this->assertEquals(testExtendedAnnotationContainer::TYPE_HTML, $ann->type);
         $this->assertEquals(215, $ann->length);

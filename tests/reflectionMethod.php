@@ -65,7 +65,7 @@ class testReflectionMethodClass
     }
 }
 
-class reflectionMethodTests  extends PHPUnit_Framework_TestCase
+class reflectionMethodTests  extends \PHPUnit\Framework\TestCase
 {
     public function testNoParameter()
     {
