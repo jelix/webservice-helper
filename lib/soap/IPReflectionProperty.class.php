@@ -11,7 +11,7 @@
  * @version 0.2
  *
  * @author David Kingma
- * @extends reflectionProperty
+ * @contributor Laurent Jouanneau
  */
 class IPReflectionProperty extends reflectionProperty
 {
@@ -38,9 +38,6 @@ class IPReflectionProperty extends reflectionProperty
 
     /** @var string */
     public $smallDescription = '';
-
-    /** @var string */
-    public $name = null;
 
     /** @var string */
     private $comment = null;

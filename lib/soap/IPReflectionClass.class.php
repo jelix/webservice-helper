@@ -12,9 +12,10 @@
  *
  * @author David Kingma
  * @contributor Sylvain de Vathaire
+ * @contributor Laurent Jouanneau
  * @extends reflectionClass
  */
-class IPReflectionClass extends reflectionClass
+class IPReflectionClass extends ReflectionClass
 {
     /** @var string class name */
     public $classname = null;
@@ -60,6 +61,7 @@ class IPReflectionClass extends reflectionClass
      *
      * @return IPReflectionMethod[]
      */
+    #[\ReturnTypeWillChange]
     public function getMethods($alsoProtected = true, $alsoPrivate = true, $alsoHerited = false)
     {
         $ar = parent::getMethods();
@@ -88,6 +90,7 @@ class IPReflectionClass extends reflectionClass
      *
      * @return IPReflectionProperty[]
      */
+    #[\ReturnTypeWillChange]
     public function getProperties($alsoProtected = true, $alsoPrivate = true, $alsoHerited = false)
     {
         $ar = parent::getProperties();
@@ -98,7 +101,7 @@ class IPReflectionClass extends reflectionClass
                     $p = new IPReflectionProperty($this->classname, $property->getName());
                     $this->properties[$property->name] = $p;
                 } catch (ReflectionException $exception) {
-                    echo 'Fout bij property: '.$property->name."<br>\n";
+                    echo 'Property error: '.$property->name."<br>\n";
                 }
             }
         }

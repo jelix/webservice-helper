@@ -11,8 +11,7 @@ if (!extension_loaded('soap')) {
 
 session_start();
 
-/** autoload functie voor PHP5 */
-function __autoload($classname)
+spl_autoload_register( function ($classname)
 {
     if (file_exists(__DIR__."/data_objects/$classname.class.php")) {
         include __DIR__."/data_objects/$classname.class.php";
@@ -21,7 +20,8 @@ function __autoload($classname)
     } elseif (file_exists(__DIR__."/../lib/$classname.class.php")) {
         include __DIR__."/../lib/$classname.class.php";
     }
-}
+});
+
 
 /** Schrijft de gegeven tekst naar de debug file */
 function debug($txt, $file = 'debug.log')

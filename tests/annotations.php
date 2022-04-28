@@ -15,13 +15,13 @@ class extendedAnnotationTestClass
 {
     /**
      * @var string
-     * @Controller(type => testExtendedAnnotationContainer::TYPE_PLAIN, length => 100)
+     * @Controller('type' => testExtendedAnnotationContainer::TYPE_PLAIN, 'length' => 100)
      */
     public $propertyA;
 
     /**
      * @var string
-     * @Controller(type => testExtendedAnnotationContainer::TYPE_HTML, length => 215)
+     * @Controller('type' => testExtendedAnnotationContainer::TYPE_HTML, 'length' => 215)
      */
     public function methodB()
     {

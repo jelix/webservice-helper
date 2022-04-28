@@ -3,7 +3,7 @@
 /**
  * An extended reflection/documentation class for class methods.
  *
- * This class extends the reflectioMethod class by also parsing the
+ * This class extends the ReflectionMethod class by also parsing the
  * comment for javadoc compatible @tags and by providing help
  * functions to generate a WSDL file. The class might also
  * be used to generate a phpdoc on the fly
@@ -11,9 +11,9 @@
  * @version 0.1
  *
  * @author David Kingma
- * @extends reflectionMethod
+ * @contributor Laurent Jouanneau
  */
-class IPReflectionMethod extends reflectionMethod
+class IPReflectionMethod extends ReflectionMethod
 {
     /** @var string class name */
     public $classname;
@@ -72,6 +72,7 @@ class IPReflectionMethod extends reflectionMethod
      *
      * @return ReflectionParameter[] Associative array with parameter objects
      */
+    #[\ReturnTypeWillChange]
     public function getParameters()
     {
         $this->parameters = array();
@@ -79,16 +80,16 @@ class IPReflectionMethod extends reflectionMethod
         foreach ((array) $ar as $i => $parameter) {
             $parameter->type = '';
             try {
-                $ref = $parameter->getClass();
-                if ($ref) {
-                    $parameter->type = $ref->getName();
+                $className = $this->compatGetClass($parameter);
+                if ($className) {
+                    $parameter->type = $className;
                 }
             } catch (Exception $e) {
             }
             if ($parameter->type == '') {
-                if ($parameter->isArray()) {
+                if ($this->compatGetType($parameter, 'array')) {
                     $parameter->type = 'array';
-                } elseif ($parameter->isCallable()) {
+                } elseif ($this->compatGetType($parameter, 'callable')) {
                     $parameter->type = 'function';
                 } elseif (isset($this->params) && isset($this->params[$i])) {
                     $parameter->type = $this->params[$i]->type;
@@ -128,4 +129,57 @@ class IPReflectionMethod extends reflectionMethod
         $this->comment = $this->getDocComment();
         new IPReflectionCommentParser($this->comment, $this);
     }
+
+
+    private function compatGetType($reflectionParameter, $expectedType)
+    {
+        if (!method_exists($reflectionParameter, 'getType')) {
+            // compatibility with PHP 5
+            return $reflectionParameter->isArray();
+        }
+
+        $reflectionType = $reflectionParameter->getType();
+
+        if (!$reflectionType) return false;
+
+        $types = $reflectionType instanceof ReflectionNamedType
+            ? [$reflectionType]
+            : $reflectionType->getTypes();
+
+        return in_array($expectedType, array_map(function(ReflectionNamedType $t) {
+            return $t->getName();
+        }, $types));
+
+    }
+
+
+    private function compatGetClass($reflectionParameter)
+    {
+        if (!method_exists($reflectionParameter, 'getType')) {
+            // compatibility with PHP 5
+            $ref = $reflectionParameter->getClass();
+            if ($ref) {
+                return $ref->getName();
+            }
+            return '';
+        }
+
+        $reflectionType = $reflectionParameter->getType();
+
+        if (!$reflectionType) return '';
+
+        $types = $reflectionType instanceof ReflectionNamedType
+            ? [$reflectionType]
+            : $reflectionType->getTypes();
+
+        foreach ($types as $type) {
+            if (!$type->isBuiltin()) {
+                return $type->getName();
+            }
+        }
+        return '';
+
+    }
+
+
 }

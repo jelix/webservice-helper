@@ -66,7 +66,6 @@ class IPPhpDoc
         }
         $xtpl = new IPXSLTemplate($template);
         $documentation = array();
-        $documentation['menu'] = array();
         //loop menu items
         $documentation['menu'] = $this->getClasses();
 
