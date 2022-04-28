@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+COMMAND="$1"
+shift
+
+if [ "$COMMAND" == "" ]; then
+    echo "Error: command is missing"
+    echo "Possible commands: "
+    echo "- Into php: reset, composer-install,"
+    echo "  composer-update, unit-tests"
+    echo "- To enter into the php container: shell, shell-root"
+    exit 1;
+fi
+
+PHP_CONTAINER=webservice_helper_test_php
+
+case $COMMAND in
+    reset)
+        docker exec -t -i $PHP_CONTAINER appctl.sh reset;;
+    composer-install)
+        docker exec -t -i $PHP_CONTAINER appctl.sh composer_install;;
+    composer-update)
+        docker exec -t -i $PHP_CONTAINER appctl.sh composer_update;;
+    unit-tests)
+        docker exec -t -i $PHP_CONTAINER appctl.sh unit-tests $@;;
+    shell)
+       docker exec -it --user userphp $PHP_CONTAINER  /bin/bash -l;;
+    shell-root)
+       docker exec -it $PHP_CONTAINER  /bin/bash  -l;;
+    *)
+        echo "wrong command"
+        exit 2
+        ;;
+esac
+

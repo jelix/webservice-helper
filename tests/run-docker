@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -e
+
+export APP_USER_ID=${APP_USER_ID:-$(id -u)}
+export APP_GROUP_ID=${APP_GROUP_ID:-$(id -g)}
+
+CMD=$1
+
+if [ "$SOAPAPP_WEB_PORT" == "" ]; then
+  export SOAPAPP_WEB_PORT=8316
+fi
+
+if [ "$PHP_VERSION" == "" ]; then
+  export PHP_VERSION=7.4
+fi
+
+if [ "$CMD" == "build" ]; then
+  # be sure to have the latest image
+  docker pull 3liz/liz-php-fpm:$PHP_VERSION
+fi
+
+if [ "$CMD" == "reset" ]; then
+    # Stop/Remove containers
+    docker-compose -p webservice-helper-test rm -sf || true
+    exit 0
+elif [ -z "$CMD" ]; then
+    CMD="up"
+else
+    shift
+fi
+
+
+docker-compose -p webservice-helper-test $CMD
